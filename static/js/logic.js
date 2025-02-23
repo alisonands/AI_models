@@ -52,6 +52,18 @@ document.querySelector("form").addEventListener("submit", function (event) {
               </div>
             </div>
 
+            <div class="row mt-4 g-4">
+            <div class="col-md-4">
+              <div class="card h-100">
+                <div class="card-header">
+                  <h5 class="card-title mb-0 text-capitalize">Llama</h5>
+                </div>
+                <div class="card-body">
+                  <p class="card-text whitespace-pre-wrap">${data.llama_response}</p>
+                </div>
+              </div>
+            </div>
+
         </div>
       `
         })
