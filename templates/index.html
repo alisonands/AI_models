@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Model Conversation</title>
+  <!-- Link to Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="text-center mb-5">
+          <h1 class="display-4 fw-bold text-primary">
+            AI Model Conversation
+          </h1>
+          <p class="lead text-muted">
+            Have a conversation with multiple AI models side by side
+          </p>
+        </div>
+
+        <div class="mb-5">
+            <div id="response-container" class="mb-5"></div>
+            
+          <!-- Messages will be dynamically inserted here -->
+          <!-- <div class="mb-4">
+            <div class="bg-light p-4 rounded">
+              <p class="fw-medium">You:</p>
+              <p class="mb-0">User's prompt goes here</p>
+            </div>
+            <div class="row mt-4 g-4">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0 text-capitalize">Model 1</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text whitespace-pre-wrap">Response from model 1</p>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0 text-capitalize">Model 2</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text whitespace-pre-wrap">Response from model 2</p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0 text-capitalize">Model 3</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text whitespace-pre-wrap">Response from model 3</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- input -->
+        <form>
+            <div class="mb-3">
+              <textarea
+                id="prompt-input"
+                class="form-control"
+                placeholder="Type something..."
+                rows="5"
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">
+              Send to All Models
+            </button>
+          </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Link to Bootstrap JS (optional, for interactive components) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../static/js/logic.js"></script>
+</body>
+</html>
