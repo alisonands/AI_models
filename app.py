@@ -1,13 +1,14 @@
 from flask import Flask, render_template, request, jsonify
 from google import genai
 from openai import OpenAI
+from SECRETS import gemini_api_key, openai_api_key
 
 #genai clients
-genai_client = genai.Client(api_key="AIzaSyAXgh68n1heuatP5gd8NvKn2soZGf2sf04")
+genai_client = genai.Client(api_key=gemini_api_key)
 genai_chat = genai_client.chats.create(model='gemini-2.0-flash')
 
 #openai clients
-openai_client = OpenAI(api_key='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')
+openai_client = OpenAI(api_key=openai_api_key)
 # openai_chat = client.beta.assistants.create(
 #     instructions="keep responses short and minimize tokens",
 #     # name="Math Tutor",
