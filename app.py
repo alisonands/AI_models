@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, jsonify
 from google import genai
 from openai import OpenAI
-from SECRETS import gemini_api_key, openai_api_key
+from SECRETS import gemini_api_key, openai_api_key, claude_api_key
 import requests #llama
+import anthropic #claude
 
 # ---------GEMINI-----------
 # clients
@@ -33,6 +34,8 @@ def openai_chat(prompt):
 # ---------LLAMA------------
 # ollama run llama3.2
 url = "http://0.0.0.0:11434/api/chat"
+
+# conversation history
 data = {
     "model": "llama3.2",
     "messages": [],
@@ -54,6 +57,45 @@ def llama_chat(prompt):
     print('Llama:', llama_response)
     return llama_response
 
+# ---------------CLAUDE----------------
+claude_client = anthropic.Anthropic(api_key=claude_api_key)
+claude_conversation_history = []
+
+def claude_chat(prompt):
+    claude_conversation_history.append(
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": prompt
+                }
+            ]
+        }
+    )
+
+    # create the message
+    message = claude_client.messages.create(
+        model = "claude-3-haiku-20240307",
+        max_tokens=500,
+        temperature=0,
+        system="You are a world class poet. reply in short messages only",
+        messages=claude_conversation_history
+    )
+
+    claude_response = message.model_dump()['content'][0]['text']
+    print('Claude:', claude_response)
+
+     # append to conversation history
+    role = message.model_dump()['role']
+    content = message.model_dump()['content']
+
+    claude_conversation_history.append(
+    {'role': role,
+    'content': content}
+    )
+
+    return claude_response
 
 app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
@@ -75,7 +117,9 @@ def home():
 
             # call/recievev llama chats
             llama_response = llama_chat(prompt)
-            print (llama_response)
+
+            # call/recieve claude chats
+            claude_response = claude_chat(prompt)
 
         except Exception as e:
             return jsonify({"error": str(e)}), 500
@@ -86,7 +130,8 @@ def home():
             "prompt": prompt,
             "gemini_response": gemini_response,
             "openai_response": openai_response,
-            "llama_response": llama_response
+            "llama_response": llama_response,
+            "claude_response": claude_response
         })
 
     # Render the HTML template for GET requests

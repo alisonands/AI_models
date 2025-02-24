@@ -23,47 +23,42 @@ document.querySelector("form").addEventListener("submit", function (event) {
             // Display the response in the frontend
             const responseContainer = document.getElementById("response-container");
             responseContainer.innerHTML += `
-        <div class="mb-4">
-          <div class="bg-light p-4 rounded">
-            <p class="fw-medium">You:</p>
-            <p class="mb-0">${data.prompt}</p>
+        <div class="response-container">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="card-title mb-0 text-capitalize">Gemini</h5>
+            </div>
+            <div class="card-body scrollable">
+              <p class="card-text whitespace-pre-wrap">${data.gemini_response}</p>
+            </div>
           </div>
 
-          <div class="row mt-4 g-4">
-            <div class="col-md-4">
-              <div class="card h-100">
-                <div class="card-header">
-                  <h5 class="card-title mb-0 text-capitalize">Gemini</h5>
-                </div>
-                <div class="card-body">
-                  <p class="card-text whitespace-pre-wrap">${data.gemini_response}</p>
-                </div>
-              </div>
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="card-title mb-0 text-capitalize">OpenAI</h5>
             </div>
-
-            <div class="col-md-4">
-              <div class="card h-100">
-                <div class="card-header">
-                  <h5 class="card-title mb-0 text-capitalize">OpenAI</h5>
-                </div>
-                <div class="card-body">
-                  <p class="card-text whitespace-pre-wrap">${data.openai_response}</p>
-                </div>
-              </div>
+            <div class="card-body scrollable">
+              <p class="card-text whitespace-pre-wrap">${data.openai_response}</p>
             </div>
+          </div>
 
-            <div class="row mt-4 g-4">
-            <div class="col-md-4">
-              <div class="card h-100">
-                <div class="card-header">
-                  <h5 class="card-title mb-0 text-capitalize">Llama</h5>
-                </div>
-                <div class="card-body">
-                  <p class="card-text whitespace-pre-wrap">${data.llama_response}</p>
-                </div>
-              </div>
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="card-title mb-0 text-capitalize">Llama</h5>
             </div>
+            <div class="card-body scrollable">
+              <p class="card-text whitespace-pre-wrap">${data.llama_response}</p>
+            </div>
+          </div>
 
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="card-title mb-0 text-capitalize">Claude</h5>
+            </div>
+            <div class="card-body scrollable">
+              <p class="card-text whitespace-pre-wrap">${data.claude_response}</p>
+            </div>
+          </div>
         </div>
       `
         })

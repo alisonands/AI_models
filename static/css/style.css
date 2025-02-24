@@ -91,6 +91,14 @@
   .card-content {
     padding: 1.5rem;
   }
+
+  .scrollable {
+    max-height: 200px; /* Adjust this value as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px; /* Add some padding for better readability */
+    border: 1px solid #ddd; /* Optional: Add a border for better visual separation */
+    border-radius: 4px; /* Optional: Add rounded corners */
+  }
   
   /* Form Styles */
   textarea {
