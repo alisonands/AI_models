@@ -98,98 +98,44 @@ def claude_chat(prompt):
     return claude_response
 
 app = Flask(__name__)
-
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def home():
+    if request.method == "POST":
+        # Handle the form submission
+        data = request.get_json()
+        prompt = data.get("prompt")
+
+        if not prompt:
+            return jsonify({"error": "No prompt provided"}), 400
+
+        try:
+            #call/recieve genai chats
+            gemini_response = gemini_chat(prompt)
+
+            # call/recieve open ai chats
+            openai_response = openai_chat(prompt)
+
+            # call/recievev llama chats
+            llama_response = llama_chat(prompt)
+
+            # call/recieve claude chats
+            claude_response = claude_chat(prompt)
+
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+        # Return the responses
+        return jsonify({
+            "status": "success",
+            "prompt": prompt,
+            "gemini_response": gemini_response,
+            "openai_response": openai_response,
+            "llama_response": llama_response,
+            "claude_response": claude_response
+        })
+
+    # Render the HTML template for GET requests
     return render_template("index.html")
-
-@app.route("/chat/gemini", methods=["POST"])
-def gemini_route():
-    data = request.get_json()
-    prompt = data.get("prompt")
-    if not prompt:
-        return jsonify({"error": "No prompt provided"}), 400
-    try:
-        response = gemini_chat(prompt)
-        return jsonify({"response": response})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-    
-@app.route("/chat/openai", methods=["POST"])
-def openai_route():
-    data = request.get_json()
-    prompt = data.get("prompt")
-    if not prompt:
-        return jsonify({"error": "No prompt provided"}), 400
-    try:
-        response = openai_chat(prompt)
-        return jsonify({"response": response})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-    
-@app.route("/chat/llama", methods=["POST"])
-def llama_route():
-    data = request.get_json()
-    prompt = data.get("prompt")
-    if not prompt:
-        return jsonify({"error": "No prompt provided"}), 400
-    try:
-        response = llama_chat(prompt)
-        return jsonify({"response": response})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-    
-@app.route("/chat/claude", methods=["POST"])
-def claude_route():
-    data = request.get_json()
-    prompt = data.get("prompt")
-    if not prompt:
-        return jsonify({"error": "No prompt provided"}), 400
-    try:
-        response = claude_chat(prompt)
-        return jsonify({"response": response})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-# @app.route("/", methods=["GET", "POST"])
-# def home():
-#     if request.method == "POST":
-#         # Handle the form submission
-#         data = request.get_json()
-#         prompt = data.get("prompt")
-
-#         if not prompt:
-#             return jsonify({"error": "No prompt provided"}), 400
-
-#         try:
-#             #call/recieve genai chats
-#             gemini_response = gemini_chat(prompt)
-
-#             # call/recieve open ai chats
-#             openai_response = openai_chat(prompt)
-
-#             # call/recievev llama chats
-#             llama_response = llama_chat(prompt)
-
-#             # call/recieve claude chats
-#             claude_response = claude_chat(prompt)
-
-#         except Exception as e:
-#             return jsonify({"error": str(e)}), 500
-
-#         # Return the responses
-#         return jsonify({
-#             "status": "success",
-#             "prompt": prompt,
-#             "gemini_response": gemini_response,
-#             "openai_response": openai_response,
-#             "llama_response": llama_response,
-#             "claude_response": claude_response
-#         })
-
-#     # Render the HTML template for GET requests
-#     return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
