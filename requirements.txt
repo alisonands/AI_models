@@ -1,4 +1,6 @@
-flask
-google-genai
+Flask
+gunicorn
+google-generativeai
 openai
 anthropic
+requests
