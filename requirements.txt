@@ -1,0 +1,6 @@
+Flask
+gunicorn
+google-genai
+openai
+anthropic
+requests
