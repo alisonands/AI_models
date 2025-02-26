@@ -7,9 +7,9 @@ import anthropic #claude
 
 #for render
 import os
-gemini_api_key = os.getenv(gemini_api_key_render)
-openai_api_key = os.getenv(openai_api_key_render)
-claude_api_key = os.getenv(claude_api_key_render)
+gemini_api_key = os.getenv('gemini_api_key_render')
+openai_api_key = os.getenv('openai_api_key_render')
+claude_api_key = os.getenv('claude_api_key_render')
 
 # ---------GEMINI-----------
 # clients
