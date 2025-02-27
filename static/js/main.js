@@ -39,11 +39,12 @@ function displayResponses(prompt, responses, selectedModels) {
         </div>
     `).join('');
 
-    responseContainer.innerHTML = `
+    responseContainer.innerHTML += `
         <div class="row g-4 mb-4">
+            ${userPrompt}
             ${modelResponses}
         </div>
-    ` + responseContainer.innerHTML;
+    ` 
 }
 
 modelCount.addEventListener('change', () => {
