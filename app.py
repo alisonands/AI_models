@@ -1,15 +1,15 @@
 from flask import Flask, render_template, request, jsonify
 from google import genai
 from openai import OpenAI
-from SECRETS import gemini_api_key, openai_api_key, claude_api_key
+# from SECRETS import gemini_api_key, openai_api_key, claude_api_key
 import requests #llama
 import anthropic #claude
 
 #for render
-# import os
-# gemini_api_key = os.getenv('gemini_api_key_render')
-# openai_api_key = os.getenv('openai_api_key_render')
-# claude_api_key = os.getenv('claude_api_key_render')
+import os
+gemini_api_key = os.getenv('gemini_api_key_render')
+openai_api_key = os.getenv('openai_api_key_render')
+claude_api_key = os.getenv('claude_api_key_render')
 
 # ---------GEMINI-----------
 # clients
