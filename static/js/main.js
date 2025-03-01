@@ -27,7 +27,7 @@ function displayResponses(prompt, responses, selectedModels) {
     `;
 
     const modelResponses = selectedModels.map((model, index) => `
-        <div class="col-md-${12/selectedModels.length}">
+        <div class="col-md-${12 / selectedModels.length}">
             <div class="card h-100">
                 <div class="card-header">
                     <h5 class="card-title mb-0 text-capitalize">${model}</h5>
@@ -44,7 +44,7 @@ function displayResponses(prompt, responses, selectedModels) {
             ${userPrompt}
             ${modelResponses}
         </div>
-    ` 
+    `
 }
 
 modelCount.addEventListener('change', () => {
@@ -59,7 +59,7 @@ chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const prompt = document.getElementById('prompt-input').value;
     const selectedModels = Array.from(document.querySelectorAll('.model-select')).map(select => select.value);
-    
+
     const responses = {};
     for (const model of selectedModels) {
         try {
