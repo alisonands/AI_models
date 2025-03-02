@@ -1,4 +1,3 @@
-
 const modelCount = document.getElementById('modelCount');
 const modelSelectors = document.getElementById('modelSelectors');
 const chatForm = document.getElementById('chatForm');
@@ -19,32 +18,39 @@ function createModelSelector(index) {
 }
 
 function displayResponses(prompt, responses, selectedModels) {
-    const userPrompt = `
-        <div class="bg-light p-4 rounded mb-4">
-            <p class="fw-medium">You:</p>
-            <p class="mb-0">${prompt}</p>
+    // User message
+    const userMessage = `
+        <div class="d-flex align-items-baseline justify-content-end mb-4">
+            <div class="pe-2">
+                <div class="card d-inline-block p-2 px-3 m-1 bg-primary text-white">
+                    ${prompt}
+                </div>
+            </div>
+            <div>
+                <i class="fa fa-user-circle-o"></i>
+            </div>
         </div>
     `;
 
-    const modelResponses = selectedModels.map((model, index) => `
-        <div class="col-md-${12 / selectedModels.length}">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h5 class="card-title mb-0 text-capitalize">${model}</h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text whitespace-pre-wrap">${responses[model]}</p>
+    // AI responses
+    const modelResponses = selectedModels.map(model => `
+        <div class="d-flex align-items-baseline mb-4">
+            <div>
+                <i class="fa fa-robot"></i>
+            </div>
+            <div class="pe-2">
+                <div class="small text-muted mb-1">${model}</div>
+                <div class="card d-inline-block p-2 px-3 m-1">
+                    ${responses[model]}
                 </div>
             </div>
         </div>
     `).join('');
 
-    responseContainer.innerHTML += `
-        <div class="row g-4 mb-4">
-            ${userPrompt}
-            ${modelResponses}
-        </div>
-    `
+    responseContainer.innerHTML += userMessage + modelResponses;
+    
+    // Scroll to bottom
+    responseContainer.scrollTop = responseContainer.scrollHeight;
 }
 
 modelCount.addEventListener('change', () => {
