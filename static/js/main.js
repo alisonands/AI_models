@@ -17,8 +17,7 @@ function createModelSelector(index) {
     `;
 }
 
-function displayResponses(prompt, responses, selectedModels) {
-    // User message
+function displayUserMessage(prompt) {
     const userMessage = `
         <div class="d-flex align-items-baseline justify-content-end mb-4">
             <div class="pe-2">
@@ -31,23 +30,59 @@ function displayResponses(prompt, responses, selectedModels) {
             </div>
         </div>
     `;
+    
+    responseContainer.innerHTML += userMessage;
+    
+    // Scroll to bottom
+    responseContainer.scrollTop = responseContainer.scrollHeight;
+}
 
-    // AI responses
-    const modelResponses = selectedModels.map(model => `
+function displayModelResponse(model, response) {
+    // Remove the loading spinner for this specific model
+    document.querySelectorAll('.loading-spinner').forEach(spinner => {
+        if (spinner.querySelector('.text-muted').textContent === model) {
+            spinner.remove();
+        }
+    });
+    
+    const modelResponse = `
         <div class="d-flex align-items-baseline mb-4">
             <div>
-                <i class="fa fa-robot"></i>
+                <i class="fa-solid fa-robot"></i>
             </div>
             <div class="pe-2">
                 <div class="small text-muted mb-1">${model}</div>
                 <div class="card d-inline-block p-2 px-3 m-1">
-                    ${responses[model]}
+                    ${response}
+                </div>
+            </div>
+        </div>
+    `;
+
+    responseContainer.innerHTML += modelResponse;
+    
+    // Scroll to bottom
+    responseContainer.scrollTop = responseContainer.scrollHeight;
+}
+
+function displayLoadingSpinners(selectedModels) {
+    const loadingSpinners = selectedModels.map(model => `
+        <div class="d-flex align-items-baseline mb-4 loading-spinner">
+            <div>
+                <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="pe-2">
+                <div class="small text-muted mb-1">${model}</div>
+                <div class="card d-inline-block p-2 px-3 m-1">
+                    <div class="spinner-grow spinner-grow-sm text-info" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
                 </div>
             </div>
         </div>
     `).join('');
 
-    responseContainer.innerHTML += userMessage + modelResponses;
+    responseContainer.innerHTML += loadingSpinners;
     
     // Scroll to bottom
     responseContainer.scrollTop = responseContainer.scrollHeight;
@@ -66,8 +101,17 @@ chatForm.addEventListener('submit', async (e) => {
     const prompt = document.getElementById('prompt-input').value;
     const selectedModels = Array.from(document.querySelectorAll('.model-select')).map(select => select.value);
 
-    const responses = {};
-    for (const model of selectedModels) {
+    // Display user message immediately
+    displayUserMessage(prompt);
+    
+    // Clear input field after displaying the message
+    document.getElementById('prompt-input').value = '';
+    
+    // Display loading spinners for each model
+    displayLoadingSpinners(selectedModels);
+
+    // Process each model's request independently
+    selectedModels.forEach(async (model) => {
         try {
             const response = await fetch(`/chat/${model}`, {
                 method: 'POST',
@@ -77,13 +121,11 @@ chatForm.addEventListener('submit', async (e) => {
                 body: JSON.stringify({ prompt })
             });
             const data = await response.json();
-            responses[model] = data.response;
+            displayModelResponse(model, data.response);
         } catch (error) {
-            responses[model] = `Error: ${error.message}`;
+            displayModelResponse(model, `Error: ${error.message}`);
         }
-    }
-
-    displayResponses(prompt, responses, selectedModels);
+    });
 });
 
 // Initialize with 1 model
