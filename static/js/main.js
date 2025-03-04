@@ -135,9 +135,23 @@ chatForm.addEventListener('submit', async (e) => {
 });
 
 // Add refresh functionality
-document.getElementById('refreshButton').addEventListener('click', () => {
-    // Reload the page
-    window.location.reload();
+document.getElementById('refreshButton').addEventListener('click', async () => {
+    try {
+        // Call the reset endpoint to clear all conversation histories
+        const response = await fetch('/reset_conversations', {
+            method: 'POST'
+        });
+        
+        if (response.ok) {
+            // Clear the response container
+            responseContainer.innerHTML = '';
+            console.log('All conversation histories cleared successfully');
+        } else {
+            console.error('Failed to clear conversation histories');
+        }
+    } catch (error) {
+        console.error('Error clearing conversation histories:', error);
+    }
 });
 
 // Initialize with 1 model
