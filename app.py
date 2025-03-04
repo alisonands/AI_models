@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 # from models import claude_chat, gemini_chat, openai_chat, llama_chat
+from SECRETS import gemini_api_key, openai_api_key, claude_api_key
 from google import genai
 from openai import OpenAI
 import requests #llama
@@ -7,10 +8,10 @@ import anthropic #claude
 
 
 #for render
-import os
-gemini_api_key = os.getenv('gemini_api_key_render')
-openai_api_key = os.getenv('openai_api_key_render')
-claude_api_key = os.getenv('claude_api_key_render')
+# import os
+# gemini_api_key = os.getenv('gemini_api_key_render')
+# openai_api_key = os.getenv('openai_api_key_render')
+# claude_api_key = os.getenv('claude_api_key_render')
 
 # ---------GEMINI-----------
 # clients
@@ -198,8 +199,7 @@ def claude_route():
 @app.route("/reset_conversations", methods=["POST"])
 def reset_conversations():
     try:
-        # Reset all conversation histories
-        from models import reset_all_conversations
+        # Reset all conversation histories using the function defined in app.py
         reset_all_conversations()
         return jsonify({"status": "success", "message": "All conversation histories cleared"})
     except Exception as e:
