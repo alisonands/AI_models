@@ -22,6 +22,7 @@ def gemini_chat(prompt):
     response = genai_chat.send_message(prompt)
     gemini_response = response.text
     print('Gemini:', gemini_response)
+    #to clear chats, just... create a new one. genai_client.chats.create...
     return gemini_response
 
 # --------OPENAI-------------
