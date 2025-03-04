@@ -1,108 +1,12 @@
 from flask import Flask, render_template, request, jsonify
-from google import genai
-from openai import OpenAI
-# from SECRETS import gemini_api_key, openai_api_key, claude_api_key
-import requests #llama
-import anthropic #claude
+from models import claude_chat, gemini_chat, openai_chat, llama_chat
+
 
 #for render
 import os
 gemini_api_key = os.getenv('gemini_api_key_render')
 openai_api_key = os.getenv('openai_api_key_render')
 claude_api_key = os.getenv('claude_api_key_render')
-
-# ---------GEMINI-----------
-# clients
-genai_client = genai.Client(api_key=gemini_api_key)
-genai_chat = genai_client.chats.create(model='gemini-2.0-flash')
-
-# function calling gemini api
-def gemini_chat(prompt):
-    # genai_chat = genai_client.chats.create(model='gemini-2.0-flash')
-    response = genai_chat.send_message(prompt)
-    gemini_response = response.text
-    print('Gemini:', gemini_response)
-    #to clear chats, just... create a new one. genai_client.chats.create...
-    return gemini_response
-
-# --------OPENAI-------------
-#openai clients
-openai_client = OpenAI(api_key=openai_api_key)
-
-# function calling openai api 
-def openai_chat(prompt):
-    openai_response = openai_client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}]
-    ).choices[0].message.content
-    print ('OpenAI:', openai_response)
-    return openai_response
-
-# ---------LLAMA------------
-# ollama run llama3.2
-url = "http://0.0.0.0:11434/api/chat"
-
-# conversation history
-data = {
-    "model": "llama3.2",
-    "messages": [],
-    "stream": False,
-    }
-
-def llama_chat(prompt):
-    # append prompt to data
-    user_prompt = {
-        "role": "user",
-        "content": prompt}
-    data['messages'].append(user_prompt)
-    # print(data)
-
-    response = requests.post(url, json=data)
-    
-    data['messages'].append(response.json()['message'])
-    llama_response = response.json()['message']['content']
-    print('Llama:', llama_response)
-    return llama_response
-
-# ---------------CLAUDE----------------
-claude_client = anthropic.Anthropic(api_key=claude_api_key)
-claude_conversation_history = []
-
-def claude_chat(prompt):
-    claude_conversation_history.append(
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "text",
-                    "text": prompt
-                }
-            ]
-        }
-    )
-
-    # create the message
-    message = claude_client.messages.create(
-        model = "claude-3-haiku-20240307",
-        max_tokens=500,
-        temperature=0,
-        system="You are a world class poet. reply in short messages only",
-        messages=claude_conversation_history
-    )
-
-    claude_response = message.model_dump()['content'][0]['text']
-    print('Claude:', claude_response)
-
-     # append to conversation history
-    role = message.model_dump()['role']
-    content = message.model_dump()['content']
-
-    claude_conversation_history.append(
-    {'role': role,
-    'content': content}
-    )
-
-    return claude_response
 
 app = Flask(__name__)
 
@@ -158,6 +62,15 @@ def claude_route():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/reset_conversations", methods=["POST"])
+def reset_conversations():
+    try:
+        # Reset all conversation histories
+        from models import reset_all_conversations
+        reset_all_conversations()
+        return jsonify({"status": "success", "message": "All conversation histories cleared"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # @app.route("/", methods=["GET", "POST"])
 # def home():

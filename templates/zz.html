@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Model Comparison Tool</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --dark-primary: #1a1a2e;
+      --dark-secondary: #16213e;
+      --dark-accent: #0f3460;
+      --highlight: #e94560;
+      --text-primary: #f0f0f0;
+      --text-secondary: #c0c0c0;
+    }
+    
+    body {
+      background-color: var(--dark-primary);
+      color: var(--text-primary);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      height: 100vh;
+    }
+    
+    .container-fluid {
+      height: 100%;
+      padding: 0;
+    }
+    
+    .sidebar {
+      background-color: var(--dark-secondary);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      height: 100%;
+      padding-top: 1.5rem;
+    }
+    
+    .chat-container {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .model-settings {
+      padding: 1.5rem;
+      background-color: var(--dark-secondary);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .model-badge {
+      background-color: var(--dark-accent);
+      color: var(--text-primary);
+      border-radius: 20px;
+      padding: 0.3rem 0.8rem;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+      display: inline-block;
+      font-size: 0.8rem;
+    }
+    
+    .form-select, .form-control {
+      background-color: var(--dark-accent);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      border-radius: 8px;
+    }
+    
+    .form-select:focus, .form-control:focus {
+      background-color: var(--dark-accent);
+      color: var(--text-primary);
+      border-color: var(--highlight);
+      box-shadow: 0 0 0 0.25rem rgba(233, 69, 96, 0.25);
+    }
+    
+    .btn-primary {
+      background-color: var(--highlight);
+      border: none;
+      border-radius: 8px;
+    }
+    
+    .btn-primary:hover {
+      background-color: #cf3b53;
+    }
+    
+    .response-container {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+      background-color: var(--dark-primary);
+    }
+    
+    .card {
+      background-color: var(--dark-secondary);
+      border: none;
+      border-radius: 10px;
+    }
+    
+    .user-message {
+      background-color: var(--highlight);
+      color: white;
+      border-radius: 18px 18px 0 18px;
+    }
+    
+    .model-message {
+      background-color: var(--dark-accent);
+      color: var(--text-primary);
+      border-radius: 18px 18px 18px 0;
+    }
+    
+    .input-container {
+      padding: 1rem 1.5rem;
+      background-color: var(--dark-secondary);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Custom styled model selector dropdown */
+    .model-selector {
+      background-color: var(--dark-accent);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .model-selector-header {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .model-selector-body {
+      padding: 0.5rem 1rem;
+    }
+    
+    .model-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.75rem;
+      font-size: 0.9rem;
+    }
+    
+    .icon-gemini { background-color: #8e44ad; }
+    .icon-openai { background-color: #2ecc71; }
+    .icon-llama { background-color: #e67e22; }
+    .icon-claude { background-color: #3498db; }
+    
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row h-100">
+      <div class="col-lg-3 sidebar d-none d-lg-block">
+        <div class="px-3">
+          <h4 class="mb-4"><i class="fas fa-robot me-2"></i> Model Comparison</h4>
+          <div class="mb-4">
+            <label for="modelCount" class="form-label mb-2">Number of Models:</label>
+            <select id="modelCount" class="form-select">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </div>
+          
+          <div id="modelSelectors">
+            <!-- Model selector example -->
+            <div class="model-selector">
+                <div class="model-selector-header">
+                    <span class="model-number">#1</span>
+                </div>
+                <div class="model-selector-body">
+                    <select class="form-select model-select">
+                        <option value="gemini">Gemini</option>
+                        <option value="openai">OpenAI</option>
+                        <option value="llama">Llama</option>
+                        <option value="claude">Claude</option>
+                    </select>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-9 col-12 chat-container">
+        <div class="d-block d-lg-none model-settings">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0"><i class="fas fa-robot me-2"></i> Model Comparison</h5>
+            <button class="btn btn-sm btn-outline-light" data-bs-toggle="collapse" data-bs-target="#mobileModelSettings">
+              <i class="fas fa-cog"></i> Settings
+            </button>
+          </div>
+          
+          <div id="mobileModelSettings" class="collapse mb-3">
+            <div class="card p-3">
+              <div class="mb-3">
+                <label for="mobileModelCount" class="form-label">Number of Models:</label>
+                <select id="mobileModelCount" class="form-select">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+              
+              <div id="mobileModelSelectors">
+                <!-- Mobile model selector example -->
+                <div class="model-selector">
+                    <div class="model-selector-header">
+                        <span class="model-number">#1</span>
+                    </div>
+                    <div class="model-selector-body">
+                        <select class="form-select model-select">
+                            <option value="gemini">Gemini</option>
+                            <option value="openai">OpenAI</option>
+                            <option value="llama">Llama</option>
+                            <option value="claude">Claude</option>
+                        </select>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="active-models mb-2">
+            <div class="model-badge"><i class="fas fa-robot me-1"></i> Gemini</div>
+            <div class="model-badge"><i class="fas fa-robot me-1"></i> Claude</div>
+          </div>
+        </div>
+        
+        <div id="response-container" class="response-container">
+          <!-- Example of a user message -->
+          <div class="d-flex justify-content-end mb-4">
+              <div class="pe-2">
+                  <div class="user-message p-3">
+                      How do I create a responsive grid layout?
+                  </div>
+                  <div class="text-end small text-secondary mt-1">
+                      <i class="fas fa-user me-1"></i> You
+                  </div>
+              </div>
+          </div>
+          
+          <!-- Example of model responses -->
+          <div class="d-flex mb-4">
+              <div class="pe-2">
+                  <div class="d-flex align-items-center mb-1">
+                      <div class="model-icon icon-gemini">G</div>
+                      <div class="model-name text-secondary">Gemini</div>
+                  </div>
+                  <div class="model-message p-3">
+                      To create a responsive grid layout, use CSS Grid or Flexbox. For Bootstrap, use the row and col classes with breakpoints like col-md-6.
+                  </div>
+              </div>
+          </div>
+          
+          <div class="d-flex mb-4">
+              <div class="pe-2">
+                  <div class="d-flex align-items-center mb-1">
+                      <div class="model-icon icon-claude">C</div>
+                      <div class="model-name text-secondary">Claude</div>
+                  </div>
+                  <div class="model-message p-3">
+                      For a responsive grid layout, you can use either:
+                      
+                      1. Bootstrap's grid system with rows and columns
+                      2. CSS Grid Layout
+                      3. CSS Flexbox
+                      
+                      Bootstrap is probably the simplest approach if you're already using it.
+                  </div>
+              </div>
+          </div>
+          
+          <!-- Example of a loading spinner -->
+          <div class="d-flex mb-4 loading-spinner">
+              <div class="pe-2">
+                  <div class="d-flex align-items-center mb-1">
+                      <div class="model-icon icon-llama">L</div>
+                      <div class="model-name text-secondary">Llama</div>
+                  </div>
+                  <div class="model-message p-3">
+                      <div class="spinner-grow spinner-grow-sm text-info" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+        
+        <div class="input-container">
+          <form id="chatForm">
+            <div class="input-group">
+              <input type="text" id="prompt-input" class="form-control" placeholder="Enter your prompt here...">
+              <button class="btn btn-primary" type="submit">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script src="../static/js/main.js"></script>
+</body>
+</html>
