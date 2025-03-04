@@ -5,54 +5,59 @@ const responseContainer = document.getElementById('response-container');
 
 function createModelSelector(index) {
     return `
-        <div class="mb-3">
-            <label class="form-label">Model ${index + 1}:</label>
-            <select class="form-select model-select">
-                <option value="gemini">Gemini</option>
-                <option value="openai">OpenAI</option>
-                <option value="llama">Llama</option>
-                <option value="claude">Claude</option>
-            </select>
+        <div class="model-selector">
+            <div class="model-selector-header">
+                <span class="model-number">#${index + 1}</span>
+            </div>
+            <div class="model-selector-body">
+                <select class="form-select model-select">
+                    <option value="gemini">Gemini</option>
+                    <option value="openai">OpenAI</option>
+                    <option value="llama">Llama</option>
+                    <option value="claude">Claude</option>
+                </select>
+            </div>
         </div>
     `;
 }
 
 function displayUserMessage(prompt) {
     const userMessage = `
-        <div class="d-flex align-items-baseline justify-content-end mb-4">
+        <div class="d-flex justify-content-end mb-4">
             <div class="pe-2">
-                <div class="card d-inline-block p-2 px-3 m-1 bg-primary text-white">
+                <div class="user-message p-3">
                     ${prompt}
                 </div>
-            </div>
-            <div>
-                <i class="fa fa-user-circle-o"></i>
+                <div class="text-end small text-secondary mt-1">
+                    <i class="fas fa-user me-1"></i> You
+                </div>
             </div>
         </div>
     `;
     
     responseContainer.innerHTML += userMessage;
-    
-    // Scroll to bottom
     responseContainer.scrollTop = responseContainer.scrollHeight;
 }
 
 function displayModelResponse(model, response) {
-    // Remove the loading spinner for this specific model
+    const modelIconClass = `icon-${model.toLowerCase()}`;
+    const modelInitial = model.charAt(0).toUpperCase();
+    
+    // Remove loading spinner
     document.querySelectorAll('.loading-spinner').forEach(spinner => {
-        if (spinner.querySelector('.text-muted').textContent === model) {
+        if (spinner.querySelector('.model-name').textContent === model) {
             spinner.remove();
         }
     });
     
     const modelResponse = `
-        <div class="d-flex align-items-baseline mb-4">
-            <div>
-                <i class="fa-solid fa-robot"></i>
-            </div>
+        <div class="d-flex mb-4">
             <div class="pe-2">
-                <div class="small text-muted mb-1">${model}</div>
-                <div class="card d-inline-block p-2 px-3 m-1">
+                <div class="d-flex align-items-center mb-1">
+                    <div class="model-icon ${modelIconClass}">${modelInitial}</div>
+                    <div class="model-name text-secondary">${model}</div>
+                </div>
+                <div class="model-message p-3">
                     ${response}
                 </div>
             </div>
@@ -60,31 +65,32 @@ function displayModelResponse(model, response) {
     `;
 
     responseContainer.innerHTML += modelResponse;
-    
-    // Scroll to bottom
     responseContainer.scrollTop = responseContainer.scrollHeight;
 }
 
 function displayLoadingSpinners(selectedModels) {
-    const loadingSpinners = selectedModels.map(model => `
-        <div class="d-flex align-items-baseline mb-4 loading-spinner">
-            <div>
-                <i class="fa-solid fa-robot"></i>
-            </div>
-            <div class="pe-2">
-                <div class="small text-muted mb-1">${model}</div>
-                <div class="card d-inline-block p-2 px-3 m-1">
-                    <div class="spinner-grow spinner-grow-sm text-info" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                  </div>
+    const loadingSpinners = selectedModels.map(model => {
+        const modelIconClass = `icon-${model.toLowerCase()}`;
+        const modelInitial = model.charAt(0).toUpperCase();
+        
+        return `
+            <div class="d-flex mb-4 loading-spinner">
+                <div class="pe-2">
+                    <div class="d-flex align-items-center mb-1">
+                        <div class="model-icon ${modelIconClass}">${modelInitial}</div>
+                        <div class="model-name text-secondary">${model}</div>
+                    </div>
+                    <div class="model-message p-3">
+                        <div class="spinner-grow spinner-grow-sm text-info" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 
     responseContainer.innerHTML += loadingSpinners;
-    
-    // Scroll to bottom
     responseContainer.scrollTop = responseContainer.scrollHeight;
 }
 
@@ -126,6 +132,12 @@ chatForm.addEventListener('submit', async (e) => {
             displayModelResponse(model, `Error: ${error.message}`);
         }
     });
+});
+
+// Add refresh functionality
+document.getElementById('refreshButton').addEventListener('click', () => {
+    // Reload the page
+    window.location.reload();
 });
 
 // Initialize with 1 model

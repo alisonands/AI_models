@@ -140,3 +140,7 @@
   .icon-llama { background-color: #e67e22; }
   .icon-claude { background-color: #3498db; }
   
+  #prompt-input::placeholder {
+    color: white;
+    opacity: 0.7;  /* transparency for chat placeholder */
+}
