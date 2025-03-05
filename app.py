@@ -12,6 +12,7 @@ import os
 gemini_api_key = os.getenv('gemini_api_key_render')
 openai_api_key = os.getenv('openai_api_key_render')
 claude_api_key = os.getenv('claude_api_key_render')
+together_llama_api_key = os.getenv('together_llama_api_key_render')
 
 # ---------GEMINI-----------
 # clients
@@ -58,30 +59,25 @@ def openai_chat(prompt):
     return openai_response
     
 # ---------LLAMA------------
-# ollama run llama3.2
-url = "http://0.0.0.0:11434/api/chat"
+llama_client = Together(api_key=together_llama_api_key)
+llama_conversation_history = []
 
-# conversation history
-data = {
-    "model": "llama3.2",
-    "messages": [],
-    "stream": False,
-    }
+def llama_tog_chat(prompt):
+    llama_conversation_history.append(
+        {"role": "user", "content": prompt}
+    )
+    llama_response = llama_client.chat.completions.create(
+        model = "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+        messages = llama_conversation_history
+    )
 
-def llama_chat(prompt):
-    # append prompt to data
-    user_prompt = {
-        "role": "user",
-        "content": prompt}
-    data['messages'].append(user_prompt)
-    # print(data)
+    content = llama_response.choices[0].message.content
+    llama_conversation_history.append(
+        {"role": "assistant", "content": content}
+    )
 
-    response = requests.post(url, json=data)
-    
-    data['messages'].append(response.json()['message'])
-    llama_response = response.json()['message']['content']
-    print('Llama:', llama_response)
-    return llama_response
+    print("Llama:", content)
+    return content
 
 # ---------------CLAUDE----------------
 claude_client = anthropic.Anthropic(api_key=claude_api_key)
@@ -196,14 +192,24 @@ def claude_route():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route("/reset_conversations", methods=["POST"])
-def reset_conversations():
-    try:
-        # Reset all conversation histories using the function defined in app.py
-        reset_all_conversations()
-        return jsonify({"status": "success", "message": "All conversation histories cleared"})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+def reset_all_conversations():
+    global openai_conversation_history, claude_conversation_history, data, genai_chat
+    
+    # Reset OpenAI conversation history
+    openai_conversation_history.clear()
+    
+    # Reset Claude conversation history
+    claude_conversation_history.clear()
+    
+    # Reset Llama conversation history
+    llama_conversation_history.clear()
+    
+    # Reset Gemini conversation
+    global genai_client
+    genai_chat = genai_client.chats.create(model='gemini-2.0-flash')
+    
+    print("All conversation histories have been reset")
+    return True
 
 # @app.route("/", methods=["GET", "POST"])
 # def home():
