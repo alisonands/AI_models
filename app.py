@@ -193,6 +193,7 @@ def claude_route():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/reset_conversations", methods=["POST"])
 def reset_all_conversations():
     global openai_conversation_history, claude_conversation_history, data, genai_chat
     
