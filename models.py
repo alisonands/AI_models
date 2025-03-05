@@ -2,6 +2,7 @@ from google import genai
 from openai import OpenAI
 # from SECRETS import gemini_api_key, openai_api_key, claude_api_key
 import requests #llama
+from together import Together #llama
 import anthropic #claude
 
 # ---------GEMINI-----------
@@ -49,30 +50,26 @@ def openai_chat(prompt):
     return openai_response
     
 # ---------LLAMA------------
-# ollama run llama3.2
-url = "http://0.0.0.0:11434/api/chat"
+llama_client = Together(api_key=together_llama_api_key)
+llama_conversation_history = []
 
-# conversation history
-data = {
-    "model": "llama3.2",
-    "messages": [],
-    "stream": False,
-    }
+def llama_tog_chat(prompt):
+    llama_conversation_history.append(
+        {"role": "user", "content": prompt}
+    )
+    llama_response = llama_client.chat.completions.create(
+        model = "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+        messages = llama_conversation_history
+    )
 
-def llama_chat(prompt):
-    # append prompt to data
-    user_prompt = {
-        "role": "user",
-        "content": prompt}
-    data['messages'].append(user_prompt)
-    # print(data)
+    content = llama_response.choices[0].message.content
+    llama_conversation_history.append(
+        {"role": "assistant", "content": content}
+    )
 
-    response = requests.post(url, json=data)
-    
-    data['messages'].append(response.json()['message'])
-    llama_response = response.json()['message']['content']
-    print('Llama:', llama_response)
-    return llama_response
+    print("Llama:", content)
+    return content
+
 
 # ---------------CLAUDE----------------
 claude_client = anthropic.Anthropic(api_key=claude_api_key)
@@ -125,7 +122,7 @@ def reset_all_conversations():
     claude_conversation_history.clear()
     
     # Reset Llama conversation history
-    data["messages"].clear()
+    llama_conversation_history.clear()
     
     # Reset Gemini conversation
     global genai_client

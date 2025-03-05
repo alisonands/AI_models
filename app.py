@@ -179,7 +179,7 @@ def llama_route():
     if not prompt:
         return jsonify({"error": "No prompt provided"}), 400
     try:
-        response = llama_chat(prompt)
+        response = llama_tog_chat(prompt)
         return jsonify({"response": response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
