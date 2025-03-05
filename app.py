@@ -120,25 +120,6 @@ def claude_chat(prompt):
 
     return claude_response
 
-# Function to reset all conversation histories
-def reset_all_conversations():
-    global openai_conversation_history, claude_conversation_history, data, genai_chat
-    
-    # Reset OpenAI conversation history
-    openai_conversation_history.clear()
-    
-    # Reset Claude conversation history
-    claude_conversation_history.clear()
-    
-    # Reset Llama conversation history
-    data["messages"].clear()
-    
-    # Reset Gemini conversation
-    global genai_client
-    genai_chat = genai_client.chats.create(model='gemini-2.0-flash')
-    
-    print("All conversation histories have been reset")
-    return True
 app = Flask(__name__)
 
 @app.route("/")
@@ -195,7 +176,7 @@ def claude_route():
 
 @app.route("/reset_conversations", methods=["POST"])
 def reset_all_conversations():
-    global openai_conversation_history, claude_conversation_history, data, genai_chat
+    global openai_conversation_history, claude_conversation_history, llama_conversation_history, genai_chat
     
     # Reset OpenAI conversation history
     openai_conversation_history.clear()
