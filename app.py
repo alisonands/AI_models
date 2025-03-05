@@ -201,7 +201,6 @@ def claude_route():
 def reset_conversations():
     try:
         # Reset all conversation histories
-        from models import reset_all_conversations
         reset_all_conversations()
         return jsonify({"status": "success", "message": "All conversation histories cleared"})
     except Exception as e:
