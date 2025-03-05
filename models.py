@@ -113,7 +113,7 @@ def claude_chat(prompt):
 
 # Function to reset all conversation histories
 def reset_all_conversations():
-    global openai_conversation_history, claude_conversation_history, data, genai_chat
+    global openai_conversation_history, claude_conversation_history, llama_conversation_history, genai_chat
     
     # Reset OpenAI conversation history
     openai_conversation_history.clear()
