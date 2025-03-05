@@ -96,7 +96,7 @@ def claude_chat(prompt):
         model = "claude-3-haiku-20240307",
         max_tokens=500,
         temperature=0,
-        system="You are a world class poet. reply in short messages only",
+        # system="You are a world class poet. reply in short messages only",
         messages=claude_conversation_history
     )
 
