@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from models import claude_chat, gemini_chat, openai_chat, llama_chat
+from models import claude_chat, gemini_chat, openai_chat, llama_tog_chat
 
 
 #for render
@@ -45,7 +45,7 @@ def llama_route():
     if not prompt:
         return jsonify({"error": "No prompt provided"}), 400
     try:
-        response = llama_chat(prompt)
+        response = llama_tog_chat(prompt)
         return jsonify({"response": response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
