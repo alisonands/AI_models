@@ -149,50 +149,54 @@ app = Flask(__name__)
 def home():
     return render_template("index.html")
 
-@app.route("/chat/gemini", methods=["POST"])
+@app.route("/index.html")
+def main_page():
+    return render_template("main.html")
+
+@app.route("/chat/gemini-2_0-flash", methods=["POST"])
 def gemini_route():
     data = request.get_json()
     prompt = data.get("prompt")
     if not prompt:
         return jsonify({"error": "No prompt provided"}), 400
     try:
-        response = gemini_chat(prompt)
+        response = gemini_2_0_flash_chat(prompt)
         return jsonify({"response": response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-@app.route("/chat/openai", methods=["POST"])
+@app.route("/chat/openai-4o-mini", methods=["POST"])
 def openai_route():
     data = request.get_json()
     prompt = data.get("prompt")
     if not prompt:
         return jsonify({"error": "No prompt provided"}), 400
     try:
-        response = openai_chat(prompt)
+        response = openai_gpt_4o_mini_chat(prompt)
         return jsonify({"response": response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-@app.route("/chat/llama", methods=["POST"])
-def llama_route():
+@app.route("/chat/llama3_3", methods=["POST"])
+def llama3_2_route():
     data = request.get_json()
     prompt = data.get("prompt")
     if not prompt:
         return jsonify({"error": "No prompt provided"}), 400
     try:
-        response = llama_tog_chat(prompt)
+        response = llama_3_3_tog_chat(prompt)
         return jsonify({"response": response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-@app.route("/chat/claude", methods=["POST"])
+@app.route("/chat/claude_3_haiku", methods=["POST"])
 def claude_route():
     data = request.get_json()
     prompt = data.get("prompt")
     if not prompt:
         return jsonify({"error": "No prompt provided"}), 400
     try:
-        response = claude_chat(prompt)
+        response = claude_3_haiku_chat(prompt)
         return jsonify({"response": response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500

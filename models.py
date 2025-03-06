@@ -5,28 +5,45 @@ import requests #llama
 from together import Together #llama
 import anthropic #claude
 
+# --------------------------
 # ---------GEMINI-----------
+# --------------------------
+# --------genai-2.0---------
+
 # clients
 genai_client = genai.Client(api_key=gemini_api_key)
-genai_chat = genai_client.chats.create(model='gemini-2.0-flash')
+genai_chat2_0 = genai_client.chats.create(model='gemini-2.0-flash')
 
 # function calling gemini api
-def gemini_chat(prompt):
+def gemini_2_0_flash_chat(prompt):
     # genai_chat = genai_client.chats.create(model='gemini-2.0-flash')
-    response = genai_chat.send_message(prompt)
+    response = genai_chat2_0.send_message(prompt)
     gemini_response = response.text
-    print('Gemini:', gemini_response)
+    print('Gemini 2.0 flash:', gemini_response)
     #to clear chats, just... create a new one. genai_client.chats.create...
     return gemini_response
 
+# ------genai-2.0-lite------
+genai_chat2_0_lite = genai_client.chats.create(model='gemini-2.0-flash-lite')
+def gemini_2_0_flash_lite_chat(prompt):
+    # genai_chat = genai_client.chats.create(model='gemini-2.0-flash')
+    response = genai_chat2_0_lite.send_message(prompt)
+    gemini_response = response.text
+    print('Gemini 2.0 flash lite:', gemini_response)
+    #to clear chats, just... create a new one. genai_client.chats.create...
+    return gemini_response
+
+# ---------------------------
 # --------OPENAI-------------
+# ---------------------------
+
 #openai clients
 openai_client = OpenAI(api_key=openai_api_key)
 openai_conversation_history = []
 
+# --------- 4o-mini ----------
 # function calling openai api 
-def openai_chat(prompt):
-    # user_input = input(str)
+def openai_gpt_4o_mini_chat(prompt):
 
     openai_conversation_history.append(
         {"role": "user", "content": prompt}
@@ -39,21 +56,90 @@ def openai_chat(prompt):
         )
     
     openai_response = response.choices[0].message.content
-    print('openAI response:', openai_response)
+    print('openAI 4o-mini response:', openai_response)
     
     openai_conversation_history.append(
         {"role": "assistant", "content": openai_response}
     )
 
-    # user_input = input(str)
+    return openai_response
+
+# ----------- o1 ------------
+def openai_gpt_o1(prompt):
+
+    openai_conversation_history.append(
+        {"role": "user", "content": prompt}
+    )
+
+    response = openai_client.chat.completions.create(
+        model="o1",
+        messages=openai_conversation_history,
+        store=False
+        )
+    
+    openai_response = response.choices[0].message.content
+    print('openAI o1-response:', openai_response)
+    
+    openai_conversation_history.append(
+        {"role": "assistant", "content": openai_response}
+    )
 
     return openai_response
+
+# --------- o1-mini ----------
+def openai_gpt_o1(prompt):
+
+    openai_conversation_history.append(
+        {"role": "user", "content": prompt}
+    )
+
+    response = openai_client.chat.completions.create(
+        model="o1-mini",
+        messages=openai_conversation_history,
+        store=False
+        )
     
+    openai_response = response.choices[0].message.content
+    print('openAI o1-mini response:', openai_response)
+    
+    openai_conversation_history.append(
+        {"role": "assistant", "content": openai_response}
+    )
+
+    return openai_response
+
+    
+# --------- o3-mini ----------
+def openai_gpt_o3(prompt):
+
+    openai_conversation_history.append(
+        {"role": "user", "content": prompt}
+    )
+
+    response = openai_client.chat.completions.create(
+        model="o3-mini",
+        messages=openai_conversation_history,
+        store=False
+        )
+    
+    openai_response = response.choices[0].message.content
+    print('openAI o3-mini response:', openai_response)
+    
+    openai_conversation_history.append(
+        {"role": "assistant", "content": openai_response}
+    )
+
+    return openai_response
+
+
+
+# --------------------------
 # ---------LLAMA------------
+# --------------------------
 llama_client = Together(api_key=together_llama_api_key)
 llama_conversation_history = []
 
-def llama_tog_chat(prompt):
+def llama_3_3_tog_chat(prompt):
     llama_conversation_history.append(
         {"role": "user", "content": prompt}
     )
@@ -67,15 +153,16 @@ def llama_tog_chat(prompt):
         {"role": "assistant", "content": content}
     )
 
-    print("Llama:", content)
+    print("Llama3.3:", content)
     return content
 
-
+# -------------------------------------
 # ---------------CLAUDE----------------
+# -------------------------------------
 claude_client = anthropic.Anthropic(api_key=claude_api_key)
 claude_conversation_history = []
 
-def claude_chat(prompt):
+def claude_3_haiku_chat(prompt):
     claude_conversation_history.append(
         {
             "role": "user",
