@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model Comparison Tool</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row h-100">
+            <div class="col-lg-3 sidebar d-none d-lg-block">
+                <div class="px-3">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0"><i class="fas fa-robot me-2"></i> Model Comparison</h4>
+                        <button id="refreshButton" class="btn btn-outline-light btn-sm">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div class="mb-4">
+                        <label for="modelCount" class="form-label mb-2">Number of Models:</label>
+                        <select id="modelCount" class="form-select">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </div>
+                    
+                    <div id="modelSelectors">
+                        <!-- Model selectors will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-9 col-12 chat-container">
+                <div class="response-container" id="response-container">
+                    <!-- Messages will be dynamically added here -->
+                </div>
+                
+                <div class="input-container">
+                    <form id="chatForm">
+                        <div class="input-group">
+                            <input type="text" id="prompt-input" class="form-control" placeholder="Enter your prompt here...">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/main.js"></script>
+    <script src="../static/js/protecc.js"></script>
+</body>
+
+
+</html>

@@ -14,6 +14,10 @@ app = Flask(__name__)
 def home():
     return render_template("index.html")
 
+@app.route("/index.html")
+def main_page():
+    return render_template("main.html")
+
 @app.route("/chat/gemini-2_0-flash", methods=["POST"])
 def gemini_route():
     data = request.get_json()
