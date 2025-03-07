@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, make_response
 from models import claude_3_haiku_chat, gemini_2_0_flash_chat, openai_gpt_4o_mini_chat, llama_3_3_tog_chat
 
 
@@ -12,11 +12,9 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return render_template("index.html")
-
-@app.route("/index.html")
-def main_page():
-    return render_template("main.html")
+    if request.authorization and request.authorization.username == "admin" and request.authorization.password =="aimodels271": 
+        return render_template("main.html")
+    return make_response("<h1>Access Denied!</h1>", 401, {'WWW-Authenticate': 'Basic realm="Login Required!"'})
 
 @app.route("/chat/gemini-2_0-flash", methods=["POST"])
 def gemini_route():
