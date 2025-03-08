@@ -64,8 +64,9 @@ def openai_gpt_4o_mini_chat(prompt):
 
     return openai_response
 
+
 # ----------- o1 ------------
-def openai_gpt_o1(prompt):
+def openai_gpt_o1_chat(prompt):
 
     openai_conversation_history.append(
         {"role": "user", "content": prompt}
@@ -87,7 +88,7 @@ def openai_gpt_o1(prompt):
     return openai_response
 
 # --------- o1-mini ----------
-def openai_gpt_o1(prompt):
+def openai_gpt_o1_mini_chat(prompt):
 
     openai_conversation_history.append(
         {"role": "user", "content": prompt}
@@ -110,7 +111,7 @@ def openai_gpt_o1(prompt):
 
     
 # --------- o3-mini ----------
-def openai_gpt_o3(prompt):
+def openai_gpt_o3_mini_chat(prompt):
 
     openai_conversation_history.append(
         {"role": "user", "content": prompt}
@@ -161,18 +162,128 @@ def llama_3_3_tog_chat(prompt):
 # -------------------------------------
 claude_client = anthropic.Anthropic(api_key=claude_api_key)
 claude_conversation_history = []
+# -------------3.7 sonnet--------------
+def claude_3_7_sonnet_chat(prompt):
+    claude_conversation_history.append(
+        {"role": "user", "content":[{"type": "text", "text": prompt}]}
+    )
 
+    # create the message
+    message = claude_client.messages.create(
+        model = "claude-3-7-sonnet-20250219",
+        max_tokens=500,
+        temperature=0,
+        # system="You are a world class poet. reply in short messages only",
+        messages=claude_conversation_history
+    )
+
+    claude_response = message.model_dump()['content'][0]['text']
+    print('Claude:', claude_response)
+
+     # append to conversation history
+    role = message.model_dump()['role']
+    content = message.model_dump()['content']
+
+    claude_conversation_history.append(
+    {'role': role,
+    'content': content}
+    )
+
+    return claude_response
+
+# ---------------3 opus----------------
+def claude_3_opus_chat(prompt):
+    claude_conversation_history.append(
+        {"role": "user", "content":[{"type": "text", "text": prompt}]}
+    )
+
+    # create the message
+    message = claude_client.messages.create(
+        model = "claude-3-opus-20240229",
+        max_tokens=500,
+        temperature=0,
+        # system="You are a world class poet. reply in short messages only",
+        messages=claude_conversation_history
+    )
+
+    claude_response = message.model_dump()['content'][0]['text']
+    print('Claude:', claude_response)
+
+     # append to conversation history
+    role = message.model_dump()['role']
+    content = message.model_dump()['content']
+
+    claude_conversation_history.append(
+    {'role': role,
+    'content': content}
+    )
+
+    return claude_response
+
+# --------------3.5 sonnet--------------
+def claude_3_5_sonnet_chat(prompt):
+    claude_conversation_history.append(
+        {"role": "user", "content":[{"type": "text", "text": prompt}]}
+    )
+
+    # create the message
+    message = claude_client.messages.create(
+        model = "claude-3-5-sonnet-20241022",
+        max_tokens=500,
+        temperature=0,
+        # system="You are a world class poet. reply in short messages only",
+        messages=claude_conversation_history
+    )
+
+    claude_response = message.model_dump()['content'][0]['text']
+    print('Claude:', claude_response)
+
+     # append to conversation history
+    role = message.model_dump()['role']
+    content = message.model_dump()['content']
+
+    claude_conversation_history.append(
+    {'role': role,
+    'content': content}
+    )
+
+    return claude_response
+
+
+# --------------3.5 haiku--------------
+def claude_3_5_haiku_chat(prompt):
+    claude_conversation_history.append(
+        {"role": "user", "content":[{"type": "text", "text": prompt}]}
+    )
+
+    # create the message
+    message = claude_client.messages.create(
+        model = "claude-3-5-haiku-20241022",
+        max_tokens=500,
+        temperature=0,
+        # system="You are a world class poet. reply in short messages only",
+        messages=claude_conversation_history
+    )
+
+    claude_response = message.model_dump()['content'][0]['text']
+    print('Claude:', claude_response)
+
+     # append to conversation history
+    role = message.model_dump()['role']
+    content = message.model_dump()['content']
+
+    claude_conversation_history.append(
+    {'role': role,
+    'content': content}
+    )
+
+    return claude_response
+
+# lightweight testing
+# ---------------3 haiku---------------
 def claude_3_haiku_chat(prompt):
     claude_conversation_history.append(
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "text",
-                    "text": prompt
-                }
-            ]
-        }
+        {"role": "user", "content":[{"type": "text", "text": prompt}]}
     )
 
     # create the message
