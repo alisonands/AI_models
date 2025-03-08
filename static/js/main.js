@@ -22,6 +22,8 @@ function createModelSelector(index) {
                     <option value="claude_3_5_sonnet">Claude 3.5 sonnet</option>
                     <option value="claude_3_5_haiku">Claude 3.5 haiku</option>
                     <option value="claude_3_haiku">Claude 3 haiku</option>
+                    <option value="deepseek_chat">Deepseek chat</option>
+                    <option value="deepseek_reasoner">Deepseek Reasoner</option>
                     <option value="llama3_3">Llama 3.3</option>
                 </select>
             </div>

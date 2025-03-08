@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify, make_response
-from models import claude_3_7_sonnet_chat, claude_3_opus_chat, claude_3_5_sonnet_chat, claude_3_haiku_chat, claude_3_5_haiku_chat, gemini_2_0_flash_chat, gemini_2_0_flash_lite_chat, openai_gpt_4o_mini_chat, llama_3_3_tog_chat, openai_gpt_o1_chat, openai_gpt_o1_mini_chat, openai_gpt_o3_mini_chat
+from models import claude_3_7_sonnet_chat, claude_3_opus_chat, claude_3_5_sonnet_chat, claude_3_haiku_chat, claude_3_5_haiku_chat, gemini_2_0_flash_chat, gemini_2_0_flash_lite_chat, openai_gpt_4o_mini_chat, llama_3_3_tog_chat, openai_gpt_o1_chat, openai_gpt_o1_mini_chat, openai_gpt_o3_mini_chat, deepseek_reasoner_chat, deepseek_chatx2
 
 
 #for render
@@ -184,6 +184,37 @@ def claude_3_haiku_route():
         return jsonify({"response": response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+# -------------------------------------
+# --------------DEEPSEEK---------------
+# -------------------------------------
+# -----------deepseek-chat------------
+
+@app.route("/chat/deepseek_chat", methods=["POST"])
+def deepseek_chatx2_route():
+    data = request.get_json()
+    prompt = data.get("prompt")
+    if not prompt:
+        return jsonify({"error": "No prompt provided"}), 400
+    try:
+        response = deepseek_chatx2(prompt)
+        return jsonify({"response": response})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# ---------deepseek-reasoner----------
+@app.route("/chat/deepseek_reasoner", methods=["POST"])
+def deepseek_reasoner_route():
+    data = request.get_json()
+    prompt = data.get("prompt")
+    if not prompt:
+        return jsonify({"error": "No prompt provided"}), 400
+    try:
+        response = deepseek_reasoner_chat(prompt)
+        return jsonify({"response": response})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 @app.route("/reset_conversations", methods=["POST"])
 def reset_conversations():
