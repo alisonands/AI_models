@@ -11,18 +11,11 @@ function createModelSelector(index) {
             </div>
             <div class="model-selector-body">
                 <select class="form-select model-select">
-                    <option value="gemini-2_0-flash-lite">Gemini 2.0 Flash Lite</option>
                     <option value="gemini-2_0-flash">Gemini 2.0 Flash</option>
-                    <option value="openai-o1-mini">OpenAI gpt o1 mini</option>
                     <option value="openai-o3-mini">OpenAI gpt o3 mini</option>
                     <option value="openai-o1">OpenAI gpt o1</option>
-                    <option value="openai-4o-mini">OpenAI gpt 4o mini</option>
                     <option value="claude_3_7_sonnet">Claude 3.7 sonnet</option>
                     <option value="claude_3_opus">Claude 3 opus</option>
-                    <option value="claude_3_5_sonnet">Claude 3.5 sonnet</option>
-                    <option value="claude_3_5_haiku">Claude 3.5 haiku</option>
-                    <option value="claude_3_haiku">Claude 3 haiku</option>
-                    <option value="deepseek_chat">Deepseek chat</option>
                     <option value="deepseek_reasoner">Deepseek Reasoner</option>
                     <option value="llama3_3">Llama 3.3</option>
                 </select>
