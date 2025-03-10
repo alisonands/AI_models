@@ -59,6 +59,14 @@ function displayModelResponse(model, response) {
             spinner.remove();
         }
     });
+
+    // First, sanitize the response by replacing any escaped characters
+    const sanitizedResponse = response
+        .replace(/\\n/g, '\n')  // Replace \n with newlines
+        .replace(/\\'/g, "'")   // Replace escaped single quotes
+        .replace(/\\"/g, '"');  // Replace escaped double quotes
+    
+    const htmlResponse = marked.parse(sanitizedResponse);
     
     const modelResponse = `
         <div class="d-flex mb-4">
@@ -68,7 +76,7 @@ function displayModelResponse(model, response) {
                     <div class="model-name text-secondary">${model}</div>
                 </div>
                 <div class="model-message p-3">
-                    ${response}
+                    ${htmlResponse}
                 </div>
             </div>
         </div>
