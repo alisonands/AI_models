@@ -52,22 +52,22 @@ def gemini_2_0_flash_lite_chat(prompt):
 openai_client = OpenAI(api_key=openai_api_key)
 openai_conversation_history = []
 
-# --------- 4o-mini ----------
+# --------- 4o ----------
 # function calling openai api 
-def openai_gpt_4o_mini_chat(prompt):
+def openai_gpt_4o_chat(prompt):
 
     openai_conversation_history.append(
         {"role": "user", "content": prompt}
     )
 
     response = openai_client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4o-2024-08-06",
         messages=openai_conversation_history,
         store=False
         )
     
     openai_response = response.choices[0].message.content
-    print('openAI 4o-mini:', openai_response)
+    print('openAI 4o:', openai_response)
     
     openai_conversation_history.append(
         {"role": "assistant", "content": openai_response}
@@ -476,15 +476,15 @@ def openai_o3_mini_route():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# --------- 4o-mini ---------
-@app.route("/chat/openai-4o-mini", methods=["POST"])
+# --------- 4o ---------
+@app.route("/chat/openai-4o", methods=["POST"])
 def openai_route():
     data = request.get_json()
     prompt = data.get("prompt")
     if not prompt:
         return jsonify({"error": "No prompt provided"}), 400
     try:
-        response = openai_gpt_4o_mini_chat(prompt)
+        response = openai_gpt_4o_chat(prompt)
         return jsonify({"response": response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
