@@ -52,6 +52,29 @@ def gemini_2_0_flash_lite_chat(prompt):
 openai_client = OpenAI(api_key=openai_api_key)
 openai_conversation_history = []
 
+# --------- 4.5-preview ----------
+# function calling openai api 
+def openai_gpt_4_5_preview_chat(prompt):
+
+    openai_conversation_history.append(
+        {"role": "user", "content": prompt}
+    )
+
+    response = openai_client.chat.completions.create(
+        model="gpt-4.5-preview-2025-02-27",
+        messages=openai_conversation_history,
+        store=False
+        )
+    
+    openai_response = response.choices[0].message.content
+    print('openAI 4.5 preview:', openai_response)
+    
+    openai_conversation_history.append(
+        {"role": "assistant", "content": openai_response}
+    )
+
+    return openai_response
+
 # --------- 4o ----------
 # function calling openai api 
 def openai_gpt_4o_chat(prompt):
@@ -478,13 +501,26 @@ def openai_o3_mini_route():
 
 # --------- 4o ---------
 @app.route("/chat/openai-4o", methods=["POST"])
-def openai_route():
+def openai_4o_route():
     data = request.get_json()
     prompt = data.get("prompt")
     if not prompt:
         return jsonify({"error": "No prompt provided"}), 400
     try:
         response = openai_gpt_4o_chat(prompt)
+        return jsonify({"response": response})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+# --------- 4o ---------
+@app.route("/chat/openai-4_5_preview", methods=["POST"])
+def openai_4_5_preview_route():
+    data = request.get_json()
+    prompt = data.get("prompt")
+    if not prompt:
+        return jsonify({"error": "No prompt provided"}), 400
+    try:
+        response = openai_gpt_4_5_preview_chat(prompt)
         return jsonify({"response": response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
