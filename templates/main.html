@@ -97,6 +97,11 @@
                 <div class="input-container">
                     <form id="chatForm">
                         <div class="input-group">
+                            <button class="btn btn-outline-light btn-sm pdf-upload-btn" style="border:none">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </button>
+                            <input type="file" id="pdf-file-input" accept=".pdf" style="display: none;">
+
                             <input type="text" id="prompt-input" class="form-control"
                                 placeholder="Enter your prompt here...">
                             <button class="btn btn-primary" type="submit">
@@ -113,7 +118,7 @@
     <!-- markdown parser library -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="../static/js/main.js"></script>
-    <script src="../static/js/protecc.js"></script>
+    <!-- <script src="../static/js/pdf_input.js"></script> -->
 </body>
 
 

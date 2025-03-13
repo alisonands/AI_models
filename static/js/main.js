@@ -174,3 +174,4 @@ document.getElementById('refreshButton').addEventListener('click', async () => {
 
 // Initialize with 1 model
 modelCount.dispatchEvent(new Event('change'));
+
