@@ -398,10 +398,8 @@ def deepseek_reasoner_chat(prompt):
 # -------------------------------------------------
 # Function to reset all conversation histories
 def reset_all_conversations():
-    global openai_conversation_history, claude_conversation_history, llama_conversation_history, genai_chat, deepseek_conversation_history
+    global openai_conversation_history, claude_conversation_history, llama_conversation_history, genai_chat2_0, genai_chat2_0_lite, deepseek_conversation_history
     
-    deepseek_conversation_history.clear()
-
     # Reset OpenAI conversation history
     openai_conversation_history.clear()
     
@@ -411,9 +409,16 @@ def reset_all_conversations():
     # Reset Llama conversation history
     llama_conversation_history.clear()
     
+    # Reset Deepseek conversation history
+    deepseek_conversation_history.clear()
+    
     # Reset Gemini conversation
     global genai_client
-    genai_chat = genai_client.chats.create(model='gemini-2.0-flash')
+    genai_chat2_0 = genai_client.chats.create(model='gemini-2.0-flash')
+    genai_chat2_0_lite = genai_client.chats.create(model='gemini-2.0-flash-lite')
+    
+    # Clear the conversation database
+    clear_conversation_history()
     
     print("All conversation histories have been reset")
     return True
