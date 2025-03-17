@@ -215,6 +215,25 @@ def deepseek_reasoner_route():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# conversation mode
+@app.route("/conversation", methods=["POST"])
+def conversation_route():
+    data = request.get_json()
+    prompt = data.get("prompt", "")  # Default to empty string if not provided
+    models = data.get("models", [])
+    
+    # Check if models array is provided and not empty
+    if not models:
+        return jsonify({"error": "No models provided", "responses": []}), 400
+    
+    try:
+        from models import handle_conversation
+        responses = handle_conversation(prompt, models)
+        return jsonify({"responses": responses})
+    except Exception as e:
+        print(f"Error in conversation mode: {str(e)}")
+        # Return an empty responses array to prevent frontend errors
+        return jsonify({"error": str(e), "responses": []}), 500
 
 @app.route("/reset_conversations", methods=["POST"])
 def reset_conversations():

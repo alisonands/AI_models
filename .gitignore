@@ -1,2 +1,5 @@
 SECRETS.py
 app.yaml
+.venv
+.vscode
+db_conversation.ipynb
