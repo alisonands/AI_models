@@ -5,3 +5,5 @@ openai
 anthropic
 requests
 together
+sqlalchemy
+psycopg2

@@ -6,10 +6,20 @@ from openai import OpenAI
 from together import Together
 # import requests #llama
 import anthropic #claude
+from sqlalchemy import create_engine, text
+from datetime import datetime
+import os
 
+# Import functions from models.py
+from models import (
+    handle_conversation, 
+    add_to_conversation, 
+    get_conversation_history, 
+    clear_conversation_history,
+    clean_conversation_history
+)
 
 #for render
-import os
 gemini_api_key = os.getenv('gemini_api_key_render')
 openai_api_key = os.getenv('openai_api_key_render')
 claude_api_key = os.getenv('claude_api_key_render')
@@ -397,22 +407,21 @@ def deepseek_reasoner_chat(prompt):
 # -------------------------------------------------
 # Function to reset all conversation histories
 def reset_all_conversations():
-    global openai_conversation_history, claude_conversation_history, llama_conversation_history, genai_chat, deepseek_conversation_history
+    global openai_conversation_history, claude_conversation_history, llama_conversation_history, deepseek_conversation_history, genai_chat2_0, genai_chat2_0_lite
     
+    # Reset conversation histories
     deepseek_conversation_history.clear()
-
-    # Reset OpenAI conversation history
     openai_conversation_history.clear()
-    
-    # Reset Claude conversation history
     claude_conversation_history.clear()
-    
-    # Reset Llama conversation history
     llama_conversation_history.clear()
     
-    # Reset Gemini conversation
+    # Reset Gemini conversations
     global genai_client
-    genai_chat = genai_client.chats.create(model='gemini-2.0-flash')
+    genai_chat2_0 = genai_client.chats.create(model='gemini-2.0-flash')
+    genai_chat2_0_lite = genai_client.chats.create(model='gemini-2.0-flash-lite')
+    
+    # Clear the conversation database
+    clear_conversation_history()
     
     print("All conversation histories have been reset")
     return True
@@ -639,6 +648,24 @@ def deepseek_reasoner_route():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# conversation mode
+@app.route("/conversation", methods=["POST"])
+def conversation_route():
+    data = request.get_json()
+    prompt = data.get("prompt", "")  # Default to empty string if not provided
+    models = data.get("models", [])
+    
+    # Check if models array is provided and not empty
+    if not models:
+        return jsonify({"error": "No models provided", "responses": []}), 400
+    
+    try:
+        responses = handle_conversation(prompt, models)
+        return jsonify({"responses": responses})
+    except Exception as e:
+        print(f"Error in conversation mode: {str(e)}")
+        # Return an empty responses array to prevent frontend errors
+        return jsonify({"error": str(e), "responses": []}), 500
 
 @app.route("/reset_conversations", methods=["POST"])
 def reset_conversations():
@@ -648,41 +675,6 @@ def reset_conversations():
         return jsonify({"status": "success", "message": "All conversation histories cleared"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-# @app.route("/", methods=["GET", "POST"])
-# def home():
-#     if request.method == "POST":
-#         # form submission
-#         data = request.get_json()
-#         prompt = data.get("prompt")
-
-#         if not prompt:
-#             return jsonify({"error": "No prompt provided"}), 400
-
-#         try:
-#             #call/recieve chats
-#             gemini_response = gemini_chat(prompt)
-
-#             openai_response = openai_chat(prompt)
-
-#             llama_response = llama_chat(prompt)
-
-#             claude_response = claude_chat(prompt)
-
-#         except Exception as e:
-#             return jsonify({"error": str(e)}), 500
-
-#         # Return responses
-#         return jsonify({
-#             "status": "success",
-#             "prompt": prompt,
-#             "gemini_response": gemini_response,
-#             "openai_response": openai_response,
-#             "llama_response": llama_response,
-#             "claude_response": claude_response
-#         })
-
-#     return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
