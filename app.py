@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify, make_response
 # from models import claude_chat, gemini_chat, openai_chat, llama_chat
-# from SECRETS import gemini_api_key, openai_api_key, claude_api_key
+# from SECRETS import gemini_api_key, openai_api_key, claude_api_key, deepseek_api_key, together_llama_api_key
 from google import genai
 from openai import OpenAI
 from together import Together
@@ -379,7 +379,7 @@ def deepseek_reasoner_chat(prompt):
     )
 
     response = deepseek_client.chat.completions.create(
-        model="deepseek-chat",
+        model="deepseek-reasoner",
         messages=deepseek_conversation_history,
         stream=False
     )
