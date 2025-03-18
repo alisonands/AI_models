@@ -43,8 +43,13 @@
                                 <p><b>**Conversation mode experimental**</b></p>
                                 <ul>
                                     <li>add pdf endpoint --> context caching</li>
-                                    <li>deepseek endpoint not working</li>
-                                    <li>'<' memory error</li>
+                                    <li>responses out of order</li>
+                                    <li>deepseek endpoint</li>
+                                    <ul>
+                                        <li>sigkill error --> takes too long to respond</li>
+                                        <li>added gunicorn app:app -t 60 --keep-alive 60</li>
+                                    </ul>
+                                    <li>'<' memory/json format error??</li>
                                     <li>connect to GCP</li>
                                     <li>auto update for recent models</li>
                                     <li>show token usage</li>
