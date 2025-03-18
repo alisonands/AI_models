@@ -390,7 +390,7 @@ def deepseek_reasoner_chat(prompt):
     )
 
     response = deepseek_client.chat.completions.create(
-        model="deepseek-chat",
+        model="deepseek-reasoner",
         messages=deepseek_conversation_history,
         stream=False
     )
