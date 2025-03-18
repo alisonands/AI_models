@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Model Comparison Tool</title>
+    <title><i class="fas fa-robot me-2"></i>AI Model Comparison Tool</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../static/css/style.css">
@@ -13,16 +13,22 @@
 <body>
     <div class="container-fluid">
         <div class="row h-100">
+            <!-- <nav class="navbar bg-body-tertiary">
+                <div class="container-fluid d-flex justify-content-end">
+                  <a class="navbar-brand" href="#">Navbar</a>
+                </div>
+            </nav> -->
             <div class="col-lg-3 sidebar d-none d-lg-block">
                 <div class="px-3">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="mb-0"><i class="fas fa-robot me-2"></i> Model Comparison</h4>
-                        <button class="btn btn-outline-light btn-sm" data-bs-toggle="offcanvas"
-                            data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
+
+                        <button class="btn btn-outline-light btn-sm" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
                             <i class="fa-solid fa-comment-dots"></i>
                         </button>
 
-                        <button id="refreshButton" class="btn btn-outline-light btn-sm">
+                        <!-- refresh button -->
+                        <button id="refreshButton" class="btn btn-primary">
                             <i class="fas fa-sync-alt"></i>
                         </button>
 
@@ -34,7 +40,24 @@
                                     aria-label="Close"></button>
                             </div>
                             <div class="offcanvas-body">
-                                <p>Openai models (latest data release)</p>
+                                <p><b>**Conversation mode experimental**</b></p>
+                                <ul>
+                                    <li>add pdf endpoint --> context caching</li>
+                                    <li>responses out of order</li>
+                                    <li>deepseek endpoint</li>
+                                    <ul>
+                                        <li>sigkill error --> takes too long to respond</li>
+                                        <li>added gunicorn app:app -t 60 --keep-alive 60</li>
+                                    </ul>
+                                    <li>'<' memory/json format error??</li>
+                                    <li>connect to GCP</li>
+                                    <li>auto update for recent models</li>
+                                    <li>show token usage</li>
+                                    <li>mobile compatibility</li>
+                                </ul>
+
+                                <p>Latest data releases:</p>
+                                <p>Openai models</p>
                                 <ul>
                                     <li>o1 (Sep 30, 2023)</li>
                                     <li>o1-mini (Sep 30, 2023)</li>
@@ -77,6 +100,7 @@
                         <input class="form-check-input" type="checkbox" id="conversationMode">
                         <label class="form-check-label" for="conversationMode">Conversation Mode</label>
                     </div>
+
                     <div class="mb-4">
                         <label for="modelCount" class="form-label mb-2">Number of Models:</label>
                         <select id="modelCount" class="form-select">
@@ -124,6 +148,5 @@
     <script src="../static/js/main.js"></script>
     <!-- <script src="../static/js/pdf_input.js"></script> -->
 </body>
-
 
 </html>

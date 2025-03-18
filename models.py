@@ -1,6 +1,6 @@
 from google import genai
 from openai import OpenAI
-from SECRETS import gemini_api_key, openai_api_key, claude_api_key, together_llama_api_key, deepseek_api_key
+# from SECRETS import gemini_api_key, openai_api_key, claude_api_key
 import requests #llama
 from together import Together #llama
 import anthropic #claude
@@ -723,6 +723,8 @@ def handle_conversation(prompt, models):
             elif model == "openai-o1":
                 response = openai_gpt_o1_chat(formatted_prompt)
             elif model == "openai-4o":
+                response == openai_gpt_4o_chat(formatted_prompt)
+            elif model == "openai-4o-mini":
                 response = openai_gpt_4o_mini_chat(formatted_prompt)
             elif model == "claude_3_7_sonnet":
                 response = claude_3_7_sonnet_chat(formatted_prompt)
