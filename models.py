@@ -1,6 +1,6 @@
 from google import genai
 from openai import OpenAI
-# from SECRETS import gemini_api_key, openai_api_key, claude_api_key
+from SECRETS import gemini_api_key, openai_api_key, claude_api_key, together_llama_api_key, deepseek_api_key
 import requests #llama
 from together import Together #llama
 import anthropic #claude
