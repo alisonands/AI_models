@@ -3,3 +3,4 @@ app.yaml
 .venv
 .vscode
 db_conversation.ipynb
+Dockerfile

@@ -9,6 +9,10 @@ import anthropic #claude
 from sqlalchemy import create_engine, text
 from datetime import datetime
 
+# for pdf parsing
+import base64
+import pathlib
+
 #for render
 # import os
 # gemini_api_key = os.getenv('gemini_api_key_render')
