@@ -23,6 +23,7 @@ openai_api_key = os.getenv('openai_api_key_render')
 claude_api_key = os.getenv('claude_api_key_render')
 together_llama_api_key = os.getenv('together_llama_api_key_render')
 deepseek_api_key = os.getenv('deepseek_api_key_render')
+mistral_api_key = os.getenv('mistral_api_key_render')
 
 # --------------------------
 # ---------GEMINI-----------
