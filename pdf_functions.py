@@ -7,6 +7,7 @@ import pathlib
 import base64
 import anthropic
 import re
+import os
 mistral_api_key = os.getenv('mistral_api_key_render')
 
 # file_path_example = "/Users/alisonandrade/Desktop/open_api_test/test_papers/ame.pdf"
