@@ -1,6 +1,6 @@
 from google import genai
 from openai import OpenAI
-# from SECRETS import gemini_api_key, openai_api_key, claude_api_key
+from SECRETS import gemini_api_key, openai_api_key, claude_api_key, together_llama_api_key, deepseek_api_key
 import requests #llama
 from together import Together #llama
 import anthropic #claude
@@ -67,6 +67,49 @@ def openai_gpt_4o_mini_chat(prompt):
 
     return openai_response
 
+# ----------- 4o ------------
+def openai_gpt_4o_chat(prompt):
+
+    openai_conversation_history.append(
+        {"role": "user", "content": prompt}
+    )
+
+    response = openai_client.chat.completions.create(
+        model="gpt-4o",
+        messages=openai_conversation_history,
+        store=False
+        )
+    
+    openai_response = response.choices[0].message.content
+    print('openAI 4o:', openai_response)
+    
+    openai_conversation_history.append(
+        {"role": "assistant", "content": openai_response}
+    )
+
+    return openai_response
+
+# ----------- 4.5 preview ------------
+def openai_gpt_4_5_preview_chat(prompt):
+
+    openai_conversation_history.append(
+        {"role": "user", "content": prompt}
+    )
+
+    response = openai_client.chat.completions.create(
+        model="gpt-4o",
+        messages=openai_conversation_history,
+        store=False
+        )
+    
+    openai_response = response.choices[0].message.content
+    print('openAI 4o:', openai_response)
+    
+    openai_conversation_history.append(
+        {"role": "assistant", "content": openai_response}
+    )
+
+    return openai_response
 
 # ----------- o1 ------------
 def openai_gpt_o1_chat(prompt):
@@ -347,7 +390,7 @@ def deepseek_reasoner_chat(prompt):
     )
 
     response = deepseek_client.chat.completions.create(
-        model="deepseek-chat",
+        model="deepseek-reasoner",
         messages=deepseek_conversation_history,
         stream=False
     )
@@ -679,8 +722,12 @@ def handle_conversation(prompt, models):
                 response = openai_gpt_o3_mini_chat(formatted_prompt)
             elif model == "openai-o1":
                 response = openai_gpt_o1_chat(formatted_prompt)
+            elif model == "openai-4o":
+                response = openai_gpt_4o_chat(formatted_prompt)
             elif model == "openai-4o-mini":
                 response = openai_gpt_4o_mini_chat(formatted_prompt)
+            elif model == "openai-4_5_preview":
+                response = openai_gpt_4_5_preview_chat(formatted_prompt)
             elif model == "claude_3_7_sonnet":
                 response = claude_3_7_sonnet_chat(formatted_prompt)
             elif model == "claude_3_opus":

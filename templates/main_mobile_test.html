@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><i class="fas fa-robot me-2"></i>AI Model Comparison Tool</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="../static/css/style.css"> -->
+    <style>
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #response-container {
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        
+        /* Remove scrollbar appearance while maintaining functionality */
+        #response-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        #response-container::-webkit-scrollbar-thumb {
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 3px;
+        }
+        
+        .offcanvas {
+            max-width: 90%;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Fixed-bottom navbar for mobile sidebar toggle -->
+    <nav class="navbar fixed-top d-lg-none bg-light py-2" style="z-index: 1020;">
+        <div class="container-fluid">
+            <span></span> <!-- Empty span for flex spacing -->
+            <button class="btn btn-primary rounded-circle shadow" type="button" data-bs-toggle="offcanvas" 
+                    data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
+                <i class="fas fa-sliders-h"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container-fluid h-100 p-0">
+        <div class="row h-100 g-0">
+            <!-- Desktop Sidebar -->
+            <div class="col-lg-3 sidebar d-none d-lg-block h-100 overflow-auto">
+                <div class="p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Model Comparison</h4>
+                        <div>
+                            <button class="btn btn-outline-light btn-sm me-2" data-bs-toggle="offcanvas" 
+                                    data-bs-target="#notesCanvas" aria-controls="notesCanvas">
+                                <i class="fa-solid fa-comment-dots"></i>
+                            </button>
+                            <button id="refreshButton" class="btn btn-primary btn-sm">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Sidebar content -->
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="conversationMode">
+                        <label class="form-check-label" for="conversationMode">Conversation Mode</label>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="modelCount" class="form-label mb-2">Number of Models:</label>
+                        <select id="modelCount" class="form-select">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </div>
+
+                    <div id="modelSelectors">
+                        <!-- Model selectors will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Chat Area -->
+            <div class="col-lg-9 col-12 d-flex flex-column h-100">
+                <!-- Response container that can scroll internally -->
+                <div id="response-container" class="flex-grow-1">
+                    <!-- Messages will be dynamically added here -->
+                </div>
+
+                <!-- Fixed input area at bottom -->
+                <div class="p-2 bg-light border-top">
+                    <form id="chatForm">
+                        <div class="input-group">
+                            <button class="btn btn-outline-secondary pdf-upload-btn" type="button">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </button>
+                            <input type="file" id="pdf-file-input" accept=".pdf" style="display: none;">
+                            <input type="text" id="prompt-input" class="form-control"
+                                placeholder="Enter your prompt here...">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar Offcanvas -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="mobileSidebarLabel">Model Comparison</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="d-flex justify-content-between mb-3">
+                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="offcanvas" 
+                        data-bs-target="#notesCanvas" aria-controls="notesCanvas">
+                    <i class="fa-solid fa-comment-dots"></i> Notes
+                </button>
+                <button id="mobileRefreshButton" class="btn btn-primary btn-sm">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="mobileConversationMode">
+                <label class="form-check-label" for="mobileConversationMode">Conversation Mode</label>
+            </div>
+
+            <div class="mb-4">
+                <label for="mobileModelCount" class="form-label mb-2">Number of Models:</label>
+                <select id="mobileModelCount" class="form-select">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+
+            <div id="mobileModelSelectors">
+                <!-- Mobile model selectors will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notes Offcanvas -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="notesCanvas" aria-labelledby="notesCanvasLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="notesCanvasLabel">Notes</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <p><b>**Conversation mode experimental**</b></p>
+            <ul>
+                <li>add pdf endpoint --> context caching</li>
+                <li>responses out of order</li>
+                <li>deepseek endpoint</li>
+                <ul>
+                    <li>sigkill error --> takes too long to respond</li>
+                    <li>added gunicorn app:app -t 60 --keep-alive 60</li>
+                </ul>
+                <li>'<' memory/json format error??</li>
+                <li>connect to GCP</li>
+                <li>auto update for recent models</li>
+                <li>show token usage</li>
+                <li>mobile compatibility</li>
+            </ul>
+
+            <p>Latest data releases:</p>
+            <p>Openai models</p>
+            <ul>
+                <li>o1 (Sep 30, 2023)</li>
+                <li>o1-mini (Sep 30, 2023)</li>
+                <li>o3-mini (Sep 30, 2023)</li>
+                <li>GPT-4.5 Preview (Sep 30, 2023)</li>
+                <li>GPT-4o (Sep 30, 2023)</li>
+                <li>GPT-4o-mini (Sep 30, 2023)</li>
+                <li>GPT-4 (Sep 30, 2023)</li>
+            </ul>
+            <p>Claude</p>
+            <ul>
+                <li>3.7 Sonnet (Nov 2024)</li>
+                <li>3.5 Sonnet (Apr 2024)</li>
+                <li>3.5 Haiku (July 2024)</li>
+                <li>3 Opus (Aug 2023)</li>
+                <li>3 Haiku (Aug 2023)</li>
+            </ul>
+            <p>Gemini</p>
+            <ul>
+                <li>2.0 Flash (Aug 2024)</li>
+                <li>2.0 Flash-Lite (Aug 2024)</li>
+                <li>1.5 Flash (Sept 2024)</li>
+                <li>1.5 Flash Lite (Oct 2024)</li>
+            </ul>
+            <p>Deepseek</p>
+            <ul>
+                <li>chat (Oct 2023[unverified])</li>
+                <li>R1 (July 2023[unverified])</li>
+            </ul>
+            <p>Llama</p>
+            <ul>
+                <li>3-70B (Dec 2023)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="../static/js/main.js"></script>
+    
+    <script>
+        // Minimal JavaScript to sync controls between mobile and desktop
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle resizing for mobile browsers that show/hide address bar
+            function adjustHeight() {
+                // Mobile browsers sometimes change height when address bar shows/hides
+                document.body.style.height = window.innerHeight + 'px';
+            }
+            
+            window.addEventListener('resize', adjustHeight);
+            window.addEventListener('orientationchange', adjustHeight);
+            adjustHeight(); // Initial call
+            
+            // Sync conversation mode
+            const desktopConvo = document.getElementById('conversationMode');
+            const mobileConvo = document.getElementById('mobileConversationMode');
+            
+            desktopConvo.addEventListener('change', function() {
+                mobileConvo.checked = this.checked;
+            });
+            
+            mobileConvo.addEventListener('change', function() {
+                desktopConvo.checked = this.checked;
+            });
+            
+            // Sync model count
+            const desktopCount = document.getElementById('modelCount');
+            const mobileCount = document.getElementById('mobileModelCount');
+            
+            desktopCount.addEventListener('change', function() {
+                mobileCount.value = this.value;
+                // Assuming updateModelSelectors is your existing function
+                // updateModelSelectors(this.value);
+            });
+            
+            mobileCount.addEventListener('change', function() {
+                desktopCount.value = this.value;
+                // updateModelSelectors(this.value);
+            });
+            
+            // Sync refresh buttons
+            const desktopRefresh = document.getElementById('refreshButton');
+            const mobileRefresh = document.getElementById('mobileRefreshButton');
+            
+            mobileRefresh.addEventListener('click', function() {
+                desktopRefresh.click();
+            });
+            
+            // PDF button functionality
+            const pdfBtn = document.querySelector('.pdf-upload-btn');
+            const pdfInput = document.getElementById('pdf-file-input');
+            
+            pdfBtn.addEventListener('click', function() {
+                pdfInput.click();
+            });
+        });
+    </script>
+</body>
+
+</html>
