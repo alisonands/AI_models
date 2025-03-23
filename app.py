@@ -441,6 +441,10 @@ def home():
         return render_template("main.html")
     return make_response("<h1>Access Denied!</h1>", 401, {'WWW-Authenticate': 'Basic realm="Login Required!"'})
 
+# folder for uploads
+app.config['UPLOAD_FOLDER'] = 'uploads'
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
 # --------------------------
 # ---------GEMINI-----------
 # --------------------------
