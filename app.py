@@ -10,6 +10,7 @@ from sqlalchemy import create_engine, text
 from datetime import datetime
 
 # for pdf parsing
+from pdf_functions import mistral_pdf_parser
 import base64
 import pathlib
 from werkzeug.utils import secure_filename
@@ -1101,6 +1102,31 @@ def clean_conversation_history():
     except Exception as e:
         print(f"Error cleaning conversation history: {str(e)}")
         return False
+
+@app.route('/upload_pdf', methods=['POST'])
+def upload_pdf():
+    if 'pdf' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+        
+    file = request.files['pdf']
+    
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+        
+    if file and file.filename.endswith('.pdf'):
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        
+        # Now call your PDF parser/OCR function
+        extracted_text = mistral_pdf_parser(filepath)
+        
+        # You can delete the file after processing if you want
+        os.remove(filepath)
+        
+        return jsonify({'text': extracted_text})
+    
+    return jsonify({'error': 'Invalid file type'}), 400
 
 if __name__ == "__main__":
     app.run(debug=True)
