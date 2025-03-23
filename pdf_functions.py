@@ -1,5 +1,5 @@
 from openai import OpenAI
-from SECRETS import *
+# from SECRETS import *
 from google import genai
 from google.genai import types
 from mistralai import Mistral
@@ -8,11 +8,15 @@ import base64
 import anthropic
 import re
 
+# for render
+import os
+mistral_api_key = os.getenv('mistral_api_key_render')
 
 # file_path_example = "/Users/alisonandrade/Desktop/open_api_test/test_papers/ame.pdf"
 # --------------------------
 # --------MISTRAL-----------
 # --------------------------
+
 def mistral_pdf_parser(file_path):
     mistral_client = Mistral(api_key=mistral_api_key)
 
