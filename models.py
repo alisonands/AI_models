@@ -1,19 +1,12 @@
 from google import genai
 from openai import OpenAI
-# from SECRETS import gemini_api_key, openai_api_key, claude_api_key, together_llama_api_key, deepseek_api_key
+from SECRETS import gemini_api_key, openai_api_key, claude_api_key, together_llama_api_key, deepseek_api_key
 import requests #llama
 from together import Together #llama
 import anthropic #claude
 from sqlalchemy import create_engine, text
 from datetime import datetime
 import os
-
-gemini_api_key = os.getenv('gemini_api_key_render')
-openai_api_key = os.getenv('openai_api_key_render')
-claude_api_key = os.getenv('claude_api_key_render')
-together_llama_api_key = os.getenv('together_llama_api_key_render')
-deepseek_api_key = os.getenv('deepseek_api_key_render')
-mistral_api_key = os.getenv('mistral_api_key_render')
 
 # --------------------------
 # ---------GEMINI-----------
