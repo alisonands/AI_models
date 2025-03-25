@@ -104,7 +104,7 @@
     border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
   
-  /* Custom styled model selector dropdown */
+  /* Custom model selector dropdown */
   .model-selector {
     background-color: var(--dark-accent);
     border-radius: 8px;
@@ -142,5 +142,5 @@
   
   #prompt-input::placeholder {
     color: white;
-    opacity: 0.7;  /* transparency for chat placeholder */
+    opacity: 0.7;  /* transparent chat placeholder */
 }

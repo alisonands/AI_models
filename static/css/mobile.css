@@ -10,7 +10,7 @@ html, body {
     overflow-x: hidden;
 }
 
-/* Remove scrollbar appearance while maintaining functionality */
+/* remove scrollbar  */
 #response-container::-webkit-scrollbar {
     width: 6px;
 }
@@ -31,7 +31,7 @@ html, body {
     max-width: 90%;
 }
 .mobile-model-selector select {
-    height: 45px; /* Larger touch target */
+    height: 45px; 
 }
 
 .mobile-model-selector .input-group-text {
