@@ -125,7 +125,14 @@ modelCount.addEventListener('change', () => {
 chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const prompt = document.getElementById('prompt-input').value;
-    const selectedModels = Array.from(document.querySelectorAll('.model-select')).map(select => select.value);
+    
+    // Get selected models from both desktop and mobile selectors
+    const desktopModels = Array.from(document.querySelectorAll('#modelSelectors .model-select')).map(select => select.value);
+    const mobileModels = Array.from(document.querySelectorAll('#mobileModelSelectors .model-select')).map(select => select.value);
+    
+    // Use whichever set of models is not empty
+    const selectedModels = desktopModels.length > 0 ? desktopModels : mobileModels;
+    
     const isConversationMode = conversationModeSwitch && conversationModeSwitch.checked;
 
     // Check if we have selected models

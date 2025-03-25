@@ -1,5 +1,5 @@
 :root {
-    --dark-primary: #1a1a2e;
+    --dark-primary: hsl(240, 28%, 14%);
     --dark-secondary: #16213e;
     --dark-accent: #0f3460;
     --highlight: #e94560;

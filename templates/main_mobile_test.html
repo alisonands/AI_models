@@ -4,37 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><i class="fas fa-robot me-2"></i>AI Model Comparison Tool</title>
+    <title>🤖 AI Models</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- <link rel="stylesheet" href="../static/css/style.css"> -->
-    <style>
-        html, body {
-            height: 100%;
-            overflow: hidden;
-            margin: 0;
-            padding: 0;
-        }
-        
-        #response-container {
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-        
-        /* Remove scrollbar appearance while maintaining functionality */
-        #response-container::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        #response-container::-webkit-scrollbar-thumb {
-            background-color: rgba(0,0,0,0.2);
-            border-radius: 3px;
-        }
-        
-        .offcanvas {
-            max-width: 90%;
-        }
-    </style>
+    <link rel="stylesheet" href="../static/css/mobile.css">
+    <link rel="stylesheet" href="../static/css/style.css">
 </head>
 
 <body>
@@ -217,64 +192,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="../static/js/main.js"></script>
-    
-    <script>
-        // Minimal JavaScript to sync controls between mobile and desktop
-        document.addEventListener('DOMContentLoaded', function() {
-            // Handle resizing for mobile browsers that show/hide address bar
-            function adjustHeight() {
-                // Mobile browsers sometimes change height when address bar shows/hides
-                document.body.style.height = window.innerHeight + 'px';
-            }
-            
-            window.addEventListener('resize', adjustHeight);
-            window.addEventListener('orientationchange', adjustHeight);
-            adjustHeight(); // Initial call
-            
-            // Sync conversation mode
-            const desktopConvo = document.getElementById('conversationMode');
-            const mobileConvo = document.getElementById('mobileConversationMode');
-            
-            desktopConvo.addEventListener('change', function() {
-                mobileConvo.checked = this.checked;
-            });
-            
-            mobileConvo.addEventListener('change', function() {
-                desktopConvo.checked = this.checked;
-            });
-            
-            // Sync model count
-            const desktopCount = document.getElementById('modelCount');
-            const mobileCount = document.getElementById('mobileModelCount');
-            
-            desktopCount.addEventListener('change', function() {
-                mobileCount.value = this.value;
-                // Assuming updateModelSelectors is your existing function
-                // updateModelSelectors(this.value);
-            });
-            
-            mobileCount.addEventListener('change', function() {
-                desktopCount.value = this.value;
-                // updateModelSelectors(this.value);
-            });
-            
-            // Sync refresh buttons
-            const desktopRefresh = document.getElementById('refreshButton');
-            const mobileRefresh = document.getElementById('mobileRefreshButton');
-            
-            mobileRefresh.addEventListener('click', function() {
-                desktopRefresh.click();
-            });
-            
-            // PDF button functionality
-            const pdfBtn = document.querySelector('.pdf-upload-btn');
-            const pdfInput = document.getElementById('pdf-file-input');
-            
-            pdfBtn.addEventListener('click', function() {
-                pdfInput.click();
-            });
-        });
-    </script>
+    <script src="../static/js/mobile.js"></script>
 </body>
 
 </html>
