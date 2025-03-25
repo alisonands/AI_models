@@ -438,7 +438,7 @@ app = Flask(__name__)
 @app.route("/")
 def home():
     if request.authorization and request.authorization.username == "admin" and request.authorization.password =="aimodels271": 
-        return render_template("main.html")
+        return render_template("main_mobile_test.html")
     return make_response("<h1>Access Denied!</h1>", 401, {'WWW-Authenticate': 'Basic realm="Login Required!"'})
 
 # folder for uploads

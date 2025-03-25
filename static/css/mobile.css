@@ -1,0 +1,46 @@
+html, body {
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+#response-container {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* remove scrollbar  */
+#response-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+#response-container::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 3px;
+}
+
+.mobileSidebar {
+    background-color: #3b8a17;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    height: 100%;
+    padding-top: 1.5rem;
+}
+
+.offcanvas {
+    max-width: 90%;
+}
+.mobile-model-selector select {
+    height: 45px; 
+}
+
+.mobile-model-selector .input-group-text {
+    min-width: 40px;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .mobile-model-selector {
+        width: 100%;
+    }
+}

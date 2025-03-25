@@ -7,5 +7,5 @@ requests
 together
 sqlalchemy
 psycopg2
-mistralai
 werkzeug
+mistralai
