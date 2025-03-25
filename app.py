@@ -531,6 +531,19 @@ def openai_4o_route():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+# ----------- 4o-mini ------------
+@app.route("/chat/openai-4o-mini", methods=["POST"])
+def openai_4o_mini_route():
+    data = request.get_json()
+    prompt = data.get("prompt")
+    if not prompt:
+        return jsonify({"error": "No prompt provided"}), 400
+    try:
+        response = openai_gpt_4o_mini_chat(prompt)
+        return jsonify({"response": response})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 # --------- 4.5 preview ---------
 @app.route("/chat/openai-4_5_preview", methods=["POST"])
 def openai_4_5_preview_route():
@@ -889,6 +902,8 @@ def handle_conversation(prompt, models):
                 response = openai_gpt_o1_chat(formatted_prompt)
             elif model == "openai-4o":
                 response = openai_gpt_4o_chat(formatted_prompt)
+            elif model == "openai-4o-mini":
+                response = openai_gpt_4o_mini_chat(formatted_prompt)
             elif model == "openai-4_5_preview":
                 response = openai_gpt_4_5_preview_chat(formatted_prompt)
             elif model == "claude_3_7_sonnet":

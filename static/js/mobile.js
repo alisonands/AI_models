@@ -81,11 +81,15 @@ function createMobileModelSelector(index) {
                     <option value="openai-o3-mini">OpenAI gpt o3 mini</option>
                     <option value="openai-o1">OpenAI gpt o1</option>
                     <option value="openai-4o">OpenAI gpt 4o</option>
+                    <option value="openai-4o-mini">OpenAI gpt 4o mini</option>
                     <option value="openai-4_5_preview">OpenAI gpt 4.5 preview</option>
                     <option value="claude_3_7_sonnet">Claude 3.7 sonnet</option>
                     <option value="claude_3_opus">Claude 3 opus</option>
+                    <option value="claude_3_haiku">Claude 3 haiku</option>
+                    <option value="deepseek_chat">Deepseek Chat</option>
                     <option value="deepseek_reasoner">Deepseek Reasoner</option>
                     <option value="llama3_3">Llama 3.3</option>
+                </select>
                 </select>
             </div>
         </div>
