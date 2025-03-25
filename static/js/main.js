@@ -133,8 +133,10 @@ chatForm.addEventListener('submit', async (e) => {
     let selectedModels;
     if (isMobile) {
         selectedModels = Array.from(document.querySelectorAll('#mobileModelSelectors .model-select')).map(select => select.value);
+        console.log('Mobile models selected:', selectedModels); // Debug log
     } else {
         selectedModels = Array.from(document.querySelectorAll('#modelSelectors .model-select')).map(select => select.value);
+        console.log('Desktop models selected:', selectedModels); // Debug log
     }
     
     const isConversationMode = conversationModeSwitch && conversationModeSwitch.checked;
@@ -263,7 +265,6 @@ chatForm.addEventListener('submit', async (e) => {
         }
     } else {
         // Original mode - process each model independently
-        // Only proceed if the prompt is not blank
         if (prompt.trim() === '') {
             responseContainer.innerHTML += `
                 <div class="d-flex mb-4">
@@ -279,10 +280,12 @@ chatForm.addEventListener('submit', async (e) => {
         
         // Display loading spinners for each model
         displayLoadingSpinners(selectedModels);
+        console.log('Processing models:', selectedModels); // Debug log
 
         // Process each model's request independently
-        selectedModels.forEach(async (model) => {
+        for (const model of selectedModels) {
             try {
+                console.log(`Sending request to model: ${model}`); // Debug log
                 const response = await fetch(`/chat/${model}`, {
                     method: 'POST',
                     headers: {
@@ -293,9 +296,10 @@ chatForm.addEventListener('submit', async (e) => {
                 const data = await response.json();
                 displayModelResponse(model, data.response);
             } catch (error) {
+                console.error(`Error with model ${model}:`, error); // Debug log
                 displayModelResponse(model, `Error: ${error.message}`);
             }
-        });
+        }
     }
 });
 
