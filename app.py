@@ -106,6 +106,27 @@ def openai_gpt_4o_chat(prompt):
 
     return openai_response
 
+# ----------- 4o-mini ------------
+def openai_gpt_4o_mini_chat(prompt):
+    openai_conversation_history.append(
+        {"role": "user", "content": prompt}
+    )
+
+    response = openai_client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=openai_conversation_history,
+        store=False
+        )
+    
+    openai_response = response.choices[0].message.content
+    print('openAI 4o mini:', openai_response)
+    
+    openai_conversation_history.append(
+        {"role": "assistant", "content": openai_response}
+    )
+
+    return openai_response
+
 
 # ----------- o1 ------------
 def openai_gpt_o1_chat(prompt):
