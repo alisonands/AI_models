@@ -4,3 +4,4 @@ app.yaml
 .vscode
 db_conversation.ipynb
 Dockerfile
+conversation_export.txt
