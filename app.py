@@ -32,8 +32,36 @@ import os
 # clients
 genai_client = genai.Client(api_key=gemini_api_key)
 genai_chat2_0 = genai_client.chats.create(model='gemini-2.0-flash')
+gemini_conversation_history = []
+gemini_client = OpenAI(
+  api_key=gemini_api_key,
+  base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
 
 # function calling gemini api
+# --------genai-2.5---------
+def gemini_2_5_pro_chat(prompt):
+    gemini_conversation_history.append(
+        {"role": "user", "content": prompt}
+    )
+
+    response = gemini_client.chat.completions.create(
+        messages=gemini_conversation_history,
+        model="gemini-2.5-pro-exp-03-25",
+        stream=False
+        )
+    
+    gemini_response = response.choices[0].message.content
+    print('Gemini:', gemini_response)
+    
+    gemini_conversation_history.append(
+        {"role": "assistant", "content": gemini_response}
+    )
+
+    return gemini_response
+
+# --------genai-2.0---------
+
 def gemini_2_0_flash_chat(prompt):
     # genai_chat = genai_client.chats.create(model='gemini-2.0-flash')
     response = genai_chat2_0.send_message(prompt)
@@ -470,6 +498,21 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 # --------------------------
 # ---------GEMINI-----------
 # --------------------------
+
+# --------genai-2.5---------
+@app.route("/chat/gemini-2_5-pro", methods=["POST"])
+def gemini_2_5_route():
+    data = request.get_json()
+    prompt = data.get("prompt")
+    if not prompt:
+        return jsonify({"error": "No prompt provided"}), 400
+    try:
+        response = gemini_2_5_pro_chat(prompt)
+        return jsonify({"response": response})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
 # --------genai-2.0---------
 @app.route("/chat/gemini-2_0-flash", methods=["POST"])
 def gemini_route():
@@ -911,7 +954,9 @@ def handle_conversation(prompt, models):
             # Get response from the appropriate model
             print(f"Calling {model} API...")
             response = ""
-            if model == "gemini-2_0-flash":
+            if model == "gemini-2_5-pro":
+                response = gemini_2_5_pro_chat(formatted_prompt)
+            elif model == "gemini-2_0-flash":
                 response = gemini_2_0_flash_chat(formatted_prompt)
             elif model == "gemini-2_0-flash-lite":
                 response = gemini_2_0_flash_lite_chat(formatted_prompt)

@@ -13,7 +13,7 @@ function createModelSelector(index) {
             </div>
             <div class="model-selector-body">
                 <select class="form-select model-select">
-                    <option value="gemini-2_0-flash">Gemini 2.0 Flash</option>
+                    <option value="gemini-2_5-pro">Gemini 2.5 Pro</option>
                     <option value="openai-o3-mini">OpenAI gpt o3 mini</option>
                     <option value="openai-o1">OpenAI gpt o1</option>
                     <option value="openai-4o">OpenAI gpt 4o</option>
