@@ -33,8 +33,36 @@ mistral_api_key = os.getenv('mistral_api_key_render')
 # clients
 genai_client = genai.Client(api_key=gemini_api_key)
 genai_chat2_0 = genai_client.chats.create(model='gemini-2.0-flash')
+gemini_conversation_history = []
+gemini_client = OpenAI(
+  api_key=gemini_api_key,
+  base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
 
 # function calling gemini api
+# --------genai-2.5---------
+def gemini_2_5_pro_chat(prompt):
+    gemini_conversation_history.append(
+        {"role": "user", "content": prompt}
+    )
+
+    response = gemini_client.chat.completions.create(
+        messages=gemini_conversation_history,
+        model="gemini-2.5-pro-exp-03-25",
+        stream=False
+        )
+    
+    gemini_response = response.choices[0].message.content
+    print('Gemini:', gemini_response)
+    
+    gemini_conversation_history.append(
+        {"role": "assistant", "content": gemini_response}
+    )
+
+    return gemini_response
+
+# --------genai-2.0---------
+
 def gemini_2_0_flash_chat(prompt):
     # genai_chat = genai_client.chats.create(model='gemini-2.0-flash')
     response = genai_chat2_0.send_message(prompt)
@@ -107,7 +135,6 @@ def openai_gpt_4o_chat(prompt):
 
     return openai_response
 
-
 # ----------- o1 ------------
 def openai_gpt_o1_chat(prompt):
 
@@ -129,52 +156,6 @@ def openai_gpt_o1_chat(prompt):
     )
 
     return openai_response
-
-# --------- o1-mini ----------
-def openai_gpt_o1_mini_chat(prompt):
-
-    openai_conversation_history.append(
-        {"role": "user", "content": prompt}
-    )
-
-    response = openai_client.chat.completions.create(
-        model="o1-mini",
-        messages=openai_conversation_history,
-        store=False
-        )
-    
-    openai_response = response.choices[0].message.content
-    print('openAI o1-mini:', openai_response)
-    
-    openai_conversation_history.append(
-        {"role": "assistant", "content": openai_response}
-    )
-
-    return openai_response
-
-    
-# --------- o3-mini ----------
-def openai_gpt_o3_mini_chat(prompt):
-
-    openai_conversation_history.append(
-        {"role": "user", "content": prompt}
-    )
-
-    response = openai_client.chat.completions.create(
-        model="o3-mini",
-        messages=openai_conversation_history,
-        store=False
-        )
-    
-    openai_response = response.choices[0].message.content
-    print('openAI o3-mini:', openai_response)
-    
-    openai_conversation_history.append(
-        {"role": "assistant", "content": openai_response}
-    )
-
-    return openai_response
-
 
 
 # --------------------------
@@ -448,6 +429,21 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 # --------------------------
 # ---------GEMINI-----------
 # --------------------------
+
+# --------genai-2.5---------
+@app.route("/chat/gemini-2_5-pro", methods=["POST"])
+def gemini_2_5_route():
+    data = request.get_json()
+    prompt = data.get("prompt")
+    if not prompt:
+        return jsonify({"error": "No prompt provided"}), 400
+    try:
+        response = gemini_2_5_pro_chat(prompt)
+        return jsonify({"response": response})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
 # --------genai-2.0---------
 @app.route("/chat/gemini-2_0-flash", methods=["POST"])
 def gemini_route():
@@ -487,32 +483,6 @@ def openai_o1_route():
         return jsonify({"error": "No prompt provided"}), 400
     try:
         response = openai_gpt_o1_chat(prompt)
-        return jsonify({"response": response})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-    
-# ----------- o1-mini ------------
-@app.route("/chat/openai-o1-mini", methods=["POST"])
-def openai_o1_mini_route():
-    data = request.get_json()
-    prompt = data.get("prompt")
-    if not prompt:
-        return jsonify({"error": "No prompt provided"}), 400
-    try:
-        response = openai_gpt_o1_mini_chat(prompt)
-        return jsonify({"response": response})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-# ----------- o3-mini ------------
-@app.route("/chat/openai-o3-mini", methods=["POST"])
-def openai_o3_mini_route():
-    data = request.get_json()
-    prompt = data.get("prompt")
-    if not prompt:
-        return jsonify({"error": "No prompt provided"}), 400
-    try:
-        response = openai_gpt_o3_mini_chat(prompt)
         return jsonify({"response": response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -993,14 +963,12 @@ def handle_conversation(prompt, models):
             # Get response from the appropriate model
             print(f"Calling {model} API...")
             response = ""
-            if model == "gemini-2_0-flash":
+            if model == "gemini-2_5-pro":
+                response = gemini_2_5_pro_chat(formatted_prompt)
+            elif model == "gemini-2_0-flash":
                 response = gemini_2_0_flash_chat(formatted_prompt)
             elif model == "gemini-2_0-flash-lite":
                 response = gemini_2_0_flash_lite_chat(formatted_prompt)
-            elif model == "openai-o1-mini":
-                response = openai_gpt_o1_mini_chat(formatted_prompt)
-            elif model == "openai-o3-mini":
-                response = openai_gpt_o3_mini_chat(formatted_prompt)
             elif model == "openai-o1":
                 response = openai_gpt_o1_chat(formatted_prompt)
             elif model == "openai-4o":

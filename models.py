@@ -7,10 +7,36 @@ import anthropic #claude
 from sqlalchemy import create_engine, text
 from datetime import datetime
 import os
+from openai import OpenAI
 
 # --------------------------
 # ---------GEMINI-----------
 # --------------------------
+gemini_conversation_history = []
+gemini_client = OpenAI(api_key=gemini_api_key, 
+                       base_url="https://generativelanguage.googleapis.com/v1beta/openai/")
+
+# --------genai-2.5---------
+def gemini_2_5_pro_chat(prompt):
+    gemini_conversation_history.append(
+        {"role": "user", "content": prompt}
+    )
+
+    response = gemini_client.chat.completions.create(
+        messages=gemini_conversation_history,
+        model="gemini-2.5-pro-exp-03-25",
+        stream=False
+        )
+    
+    gemini_response = response.choices[0].message.content
+    print('Gemini:', gemini_response)
+    
+    gemini_conversation_history.append(
+        {"role": "assistant", "content": gemini_response}
+    )
+
+    return gemini_response
+
 # --------genai-2.0---------
 
 # clients
@@ -669,7 +695,9 @@ def handle_conversation(prompt, models):
             # Get response from the appropriate model
             print(f"Calling {model} API...")
             response = ""
-            if model == "gemini-2_0-flash":
+            if model == "gemini-2_5-pro":
+                response = gemini_2_5_pro_chat(formatted_prompt)
+            elif model == "gemini-2_0-flash":
                 response = gemini_2_0_flash_chat(formatted_prompt)
             elif model == "gemini-2_0-flash-lite":
                 response = gemini_2_0_flash_lite_chat(formatted_prompt)
