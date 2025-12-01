@@ -764,43 +764,82 @@ def reset_conversations():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# database connection - SQLite
-sqlite_path = os.path.join(os.path.dirname(__file__), "conversation.db")
-database_path = f"sqlite:///{sqlite_path}"
-engine = create_engine(database_path)
-
-# Create the table if it doesn't exist
-with engine.connect() as connection:
-    connection.execute(text('''
-    CREATE TABLE IF NOT EXISTS prompts (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        role TEXT NOT NULL,
-        content TEXT NOT NULL,
-        model TEXT,
-        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-    '''))
-    connection.commit()
-print("Connected to SQLite database")
+# database connection
+try:
+    database_path = "postgresql://ai_models_user:l48XPVOJmaBcWwFMS6MnnapeF7BCXOi5@dpg-cvbkam3tq21c73e0fk1g-a.oregon-postgres.render.com/ai_models"
+    engine = create_engine(database_path)
+    # Test the connection
+    with engine.connect() as connection:
+        connection.execute(text("SELECT 1"))
+    print("Connected to PostgreSQL database")
+except Exception as e:
+    print(f"Error connecting to PostgreSQL: {str(e)}")
+    raise  # Fail if PostgreSQL connection fails
 
 # Simplify add_to_conversation function
 def add_to_conversation(role, content, model=None):
     with engine.connect() as connection:
-        query = text("INSERT INTO prompts(role, content, model) VALUES(:role, :content, :model)")
+        # First, let's check the table structure
+        inspect_query = text("SELECT column_name FROM information_schema.columns WHERE table_name = 'prompts'")
+        columns = [row[0] for row in connection.execute(inspect_query)]
+        
+        # Adjust the query based on the actual column names
+        if 'text' in columns:
+            content_column = 'text'
+        elif 'content' in columns:
+            content_column = 'content'
+        else:
+            # If we can't find a suitable column, create a new table
+            print("Creating new prompts table with correct structure")
+            connection.execute(text('''
+            DROP TABLE IF EXISTS conversation_prompts;
+            CREATE TABLE conversation_prompts (
+                id SERIAL PRIMARY KEY,
+                role TEXT NOT NULL,
+                content TEXT NOT NULL,
+                model TEXT,
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+            '''))
+            connection.commit()
+            
+            # Use the new table
+            query = text("INSERT INTO conversation_prompts(role, content, model) VALUES(:role, :content, :model)")
+            connection.execute(query, {"role": role, "content": content, "model": model})
+            connection.commit()
+            return
+        
+        # Use the existing table with the correct column name
+        query = text(f"INSERT INTO prompts(role, {content_column}, model) VALUES(:role, :content, :model)")
         connection.execute(query, {"role": role, "content": content, "model": model})
         connection.commit()
 
-# Simplify get_conversation_history function
+# Simplify get_conversation_history function withour sqlite
 def get_conversation_history():
     with engine.connect() as connection:
-        query = text("SELECT role, model, content FROM prompts ORDER BY id")
+        # Check the table structure
+        inspect_query = text("SELECT column_name FROM information_schema.columns WHERE table_name = 'prompts'")
+        columns = [row[0] for row in connection.execute(inspect_query)]
+        
+        # Determine which table and column to use
+        if 'text' in columns:
+            content_column = 'text'
+            table_name = 'prompts'
+        elif 'content' in columns:
+            content_column = 'content'
+            table_name = 'prompts'
+        else:
+            content_column = 'content'
+            table_name = 'conversation_prompts'
+        
+        query = text(f"SELECT role, model, {content_column} FROM {table_name} ORDER BY id")
         result = connection.execute(query)
         
         history = []
         for row in result:
             role = row.role
             model = row.model
-            content = row.content
+            content = getattr(row, content_column)
             
             if model:
                 formatted_content = f"[{model}] {content}"
@@ -814,9 +853,35 @@ def get_conversation_history():
 # Simplify clear_conversation_history function
 def clear_conversation_history():
     with engine.connect() as connection:
-        delete_query = text('DELETE FROM prompts')
-        connection.execute(delete_query)
-        connection.commit()
+        # Clear both potential tables
+        try:
+            delete_query = text('DELETE FROM prompts')
+            connection.execute(delete_query)
+            connection.commit()
+        except:
+            pass
+        
+        try:
+            delete_query = text('DELETE FROM conversation_prompts')
+            connection.execute(delete_query)
+            connection.commit()
+        except:
+            pass
+        
+        # Reset sequences if they exist
+        try:
+            reset_query = text('ALTER SEQUENCE prompts_id_seq RESTART WITH 1')
+            connection.execute(reset_query)
+            connection.commit()
+        except:
+            pass
+        
+        try:
+            reset_query = text('ALTER SEQUENCE conversation_prompts_id_seq RESTART WITH 1')
+            connection.execute(reset_query)
+            connection.commit()
+        except:
+            pass
 
 # Function to handle the conversation between models
 def handle_conversation(prompt, models):
