@@ -766,7 +766,7 @@ def reset_conversations():
 
 # database connection
 try:
-    database_path = "postgresql://ai_models_user:l48XPVOJmaBcWwFMS6MnnapeF7BCXOi5@dpg-cvbkam3tq21c73e0fk1g-a.oregon-postgres.render.com/ai_models"
+    database_path = "postgresql://ai_models_user:l48XPVOJmaBcWwFMS6MnnapeF7BCXOi5@dpg-cvbkam3tq21c73e0fk1g-a.oregon-postgres.render.com/ai_models?sslmode=require"
     engine = create_engine(database_path)
     # Test the connection
     with engine.connect() as connection:
@@ -774,7 +774,23 @@ try:
     print("Connected to PostgreSQL database")
 except Exception as e:
     print(f"Error connecting to PostgreSQL: {str(e)}")
-    raise  # Fail if PostgreSQL connection fails
+    print("Falling back to SQLite database")
+    sqlite_path = os.path.join(os.path.dirname(__file__), "conversation.db")
+    database_path = f"sqlite:///{sqlite_path}"
+    engine = create_engine(database_path)
+    
+    # Create the table if it doesn't exist
+    with engine.connect() as connection:
+        connection.execute(text('''
+        CREATE TABLE IF NOT EXISTS prompts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            role TEXT NOT NULL,
+            text TEXT NOT NULL,
+            model TEXT,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+        '''))
+        connection.commit()
 
 # Simplify add_to_conversation function
 def add_to_conversation(role, content, model=None):
